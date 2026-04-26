@@ -1,0 +1,1001 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wincars · Window Sticker by VIN</title>
+
+  <style>
+    /* =====================================================================
+       LANDING PAGE — WINCARS BRAND
+       ===================================================================== */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: "Helvetica Neue", Helvetica, Arial, "Liberation Sans", sans-serif;
+      color: #111;
+      background: #fafafa;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .brand-bar {
+      background: #000;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 4px solid #f6c41a;
+    }
+    .brand-bar img { height: 44px; width: auto; display: block; }
+    .brand-bar .tagline {
+      color: #f6c41a;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .3px;
+      text-transform: uppercase;
+    }
+
+    .hero {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 56px 24px 32px;
+      text-align: center;
+    }
+    .hero h1 {
+      margin: 0 0 14px;
+      font-size: 38px;
+      line-height: 1.1;
+      font-weight: 900;
+      letter-spacing: -.5px;
+    }
+    .hero h1 .accent { color: #f6c41a; }
+    .hero p {
+      margin: 0 auto;
+      max-width: 620px;
+      font-size: 16px;
+      line-height: 1.5;
+      color: #444;
+    }
+
+    .vin-card {
+      max-width: 720px;
+      margin: 28px auto 12px;
+      padding: 22px;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 8px 28px rgba(0,0,0,.08);
+      display: grid;
+      gap: 12px;
+    }
+    .vin-card label {
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: #555;
+    }
+    .vin-row {
+      display: flex;
+      gap: 10px;
+      align-items: stretch;
+      flex-wrap: wrap;
+    }
+    .vin-input {
+      flex: 1;
+      min-width: 240px;
+      padding: 14px 16px;
+      font-size: 18px;
+      font-family: "SF Mono", Menlo, Consolas, monospace;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      border: 2px solid #e2e2e2;
+      border-radius: 10px;
+      outline: none;
+      transition: border-color .15s ease;
+      background: #fafafa;
+    }
+    .vin-input:focus { border-color: #f6c41a; background: #fff; }
+    .vin-input.invalid { border-color: #e44; background: #fff7f7; }
+
+    .vin-btn {
+      padding: 14px 26px;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: .3px;
+      text-transform: uppercase;
+      color: #000;
+      background: #f6c41a;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform .08s ease, box-shadow .15s ease;
+      box-shadow: 0 4px 0 #c89a00;
+    }
+    .vin-btn:hover { transform: translateY(-1px); box-shadow: 0 5px 0 #c89a00; }
+    .vin-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #c89a00; }
+    .vin-btn:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+
+    .vin-help {
+      display: flex;
+      gap: 8px 14px;
+      flex-wrap: wrap;
+      font-size: 12px;
+      color: #666;
+    }
+    .vin-help b { color: #111; }
+
+    .sample-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .sample-buttons button {
+      background: #fff8df;
+      color: #6a4f00;
+      border: 1px dashed #d8b400;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: "SF Mono", Menlo, Consolas, monospace;
+      letter-spacing: .5px;
+    }
+    .sample-buttons button:hover { background: #f6e6a0; }
+
+    .mode-toggle {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      font-size: 12px;
+      color: #555;
+      margin-top: 4px;
+    }
+    .mode-toggle label { cursor: pointer; }
+    .mode-toggle code {
+      background: #eee;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+    }
+
+    .status-line {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 24px;
+      min-height: 28px;
+      text-align: center;
+      font-size: 13px;
+      color: #888;
+    }
+    .status-line.error { color: #c12; font-weight: 700; }
+    .status-line.success { color: #1a7e2c; font-weight: 700; }
+
+    .loader {
+      display: inline-block;
+      width: 14px; height: 14px;
+      border: 2px solid #ddd;
+      border-top-color: #f6c41a;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      vertical-align: -2px;
+      margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .sticker-stage {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 16px 16px 60px;
+      display: none;       /* hidden until first generation */
+    }
+    .sticker-stage.visible { display: block; }
+    .sticker-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+      margin-bottom: 10px;
+    }
+    .sticker-actions button {
+      padding: 8px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      background: #fff;
+      cursor: pointer;
+    }
+    .sticker-actions button:hover { background: #f5f5f5; }
+    .sticker-actions .primary { background: #000; color: #f6c41a; border-color: #000; }
+
+    /* =====================================================================
+       STICKER STYLES (SAME AS window-sticker.html — duplicated so this
+       page is fully self-contained)
+       ===================================================================== */
+    .sticker {
+      width: 1180px;
+      max-width: 100%;
+      margin: 0 auto;
+      background: #fff;
+      padding: 14px;
+      display: grid;
+      grid-template-columns: minmax(0, 2.55fr) minmax(0, 1.45fr);
+      gap: 10px;
+      box-shadow: 0 4px 30px rgba(0,0,0,.08);
+      border-radius: 4px;
+      font-size: 11px;
+      line-height: 1.35;
+      color: #111;
+    }
+    .sticker .left { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+    .sticker .right { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+
+    .sticker .top-header {
+      display: grid;
+      grid-template-columns: 0.95fr 2fr;
+      align-items: stretch;
+      min-height: 86px;
+    }
+    .sticker .logo-box {
+      background: #000;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 10px;
+      overflow: hidden;
+    }
+    .sticker .logo-box .dealer-logo {
+      width: 100%; height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    .sticker .title-box {
+      background: #fff;
+      border: 1px solid #000;
+      border-left: none;
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+    }
+    .sticker .title-box h1 { margin: 0; font-size: 20px; font-weight: 700; line-height: 1.1; }
+    .sticker .title-box .meta {
+      display: grid;
+      grid-template-columns: max-content max-content 1fr;
+      gap: 4px 22px;
+      font-size: 11px;
+    }
+    .sticker .title-box .meta .item { white-space: nowrap; }
+
+    .sticker .main-body { flex: 1; background: #ececec; display: flex; flex-direction: column; }
+    .sticker .section-bar {
+      background: #ececec;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .3px;
+      padding: 8px 4px 6px;
+      text-transform: uppercase;
+    }
+    .sticker .body-grid { flex: 1; display: grid; grid-template-columns: 1fr 1fr 1fr; }
+    .sticker .eq-col, .sticker .pricing-col { padding: 4px 14px 16px; }
+    .sticker .eq-col { background: #ececec; }
+    .sticker .pricing-col { background: #fff; border-left: 1px solid #b9b9b9; }
+    .sticker .eq-section { margin: 0 0 10px; break-inside: avoid; }
+    .sticker .eq-section h3 {
+      margin: 6px 0 4px;
+      font-size: 11.5px;
+      font-weight: 800;
+      letter-spacing: .3px;
+      text-transform: uppercase;
+    }
+    .sticker .eq-section ul { list-style: disc; margin: 0; padding: 0 0 0 16px; }
+    .sticker .eq-section li { margin: 0 0 1px; font-size: 10.5px; line-height: 1.3; }
+
+    .sticker .price-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .sticker .price-row .label {
+      font-size: 11.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      max-width: 70%;
+    }
+    .sticker .price-row .value { font-size: 14px; font-weight: 800; white-space: nowrap; }
+    .sticker .pricing-block { margin: 4px 0 14px; }
+    .sticker .pricing-block h4 {
+      margin: 0 0 4px;
+      font-size: 11.5px;
+      font-weight: 800;
+      letter-spacing: .3px;
+      text-transform: uppercase;
+    }
+    .sticker .pricing-block ul { list-style: disc; margin: 0; padding: 0 0 0 16px; }
+    .sticker .pricing-block li { margin: 0 0 1px; font-size: 10.5px; }
+    .sticker .opt-row { display: flex; justify-content: space-between; gap: 12px; font-size: 10.5px; }
+    .sticker .opt-row + .opt-row { margin-top: 1px; }
+    .sticker .opt-category { font-weight: 700; margin: 6px 0 2px; font-size: 11px; }
+    .sticker .opt-name { flex: 1; }
+    .sticker .opt-price { white-space: nowrap; }
+
+    .sticker .total-section { margin-top: auto; padding-top: 10px; border-top: 2px solid #000; }
+    .sticker .total-section .price-row { margin-bottom: 4px; }
+    .sticker .total-section .grand-total .label,
+    .sticker .total-section .grand-total .value { font-size: 15px; font-weight: 900; }
+    .sticker .total-section .pre-delivery { font-size: 10px; color: #444; margin-top: 4px; }
+    .sticker .total-section .legal { font-size: 9.5px; color: #666; margin-top: 6px; line-height: 1.3; }
+
+    .sticker .vehicle-footer {
+      border: 1px solid #000;
+      padding: 8px 14px;
+      font-size: 11.5px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 18px;
+    }
+    .sticker .vehicle-footer .footer-info { display: grid; grid-template-columns: 1fr; gap: 1px; flex: 1; min-width: 0; }
+    .sticker .vehicle-footer .row { display: flex; gap: 6px; }
+    .sticker .vehicle-footer .row .label { font-weight: 800; }
+    .sticker .footer-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 8px 4px 6px;
+      background: #000;
+      border-radius: 4px;
+      margin-left: auto;
+    }
+    .sticker .footer-brand .powered {
+      color: #f6c41a; font-size: 9.5px; font-weight: 700;
+      letter-spacing: .5px; text-transform: uppercase;
+    }
+    .sticker .footer-brand .pill-logo { height: 18px; width: auto; display: block; }
+
+    .sticker .epa-panel, .sticker .safety-panel {
+      border: 1.5px solid #000;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+    }
+    .sticker .panel-header {
+      background: #000; color: #fff;
+      display: flex; align-items: stretch; justify-content: space-between;
+      gap: 10px; padding: 6px 10px;
+    }
+    .sticker .panel-header .epa-dot {
+      font-size: 10px; font-weight: 800; line-height: 1;
+      align-self: center; border: 1px solid #fff;
+      padding: 4px 6px; text-align: center; letter-spacing: .5px;
+    }
+    .sticker .panel-header .panel-title {
+      flex: 1; align-self: center; font-size: 16px; font-weight: 800; letter-spacing: .3px;
+    }
+    .sticker .panel-header .fuel-badge {
+      align-self: center; background: #b3e1ee; color: #000;
+      font-weight: 700; font-size: 11px; padding: 6px 10px;
+      display: flex; align-items: center; gap: 6px;
+      min-width: 140px; justify-content: center;
+    }
+    .sticker .panel-header .fuel-badge .pump-icon { width: 14px; height: 14px; }
+
+    .sticker .fuel-main {
+      display: grid; grid-template-columns: auto 1fr auto;
+      gap: 10px; padding: 10px 14px; border-bottom: 1px solid #000;
+    }
+    .sticker .fuel-mpg-cell { display: flex; align-items: center; gap: 8px; }
+    .sticker .fuel-mpg-cell .pump { width: 48px; height: 48px; flex-shrink: 0; }
+    .sticker .fuel-mpg-cell .mpg-num { font-size: 56px; font-weight: 900; line-height: .85; }
+    .sticker .fuel-mpg-cell .mpg-suffix { display: flex; flex-direction: column; justify-content: center; line-height: 1; }
+    .sticker .fuel-mpg-cell .mpg-suffix .mpg-word { font-size: 24px; font-weight: 900; letter-spacing: 1px; }
+    .sticker .fuel-mpg-cell .mpg-suffix .mpg-cap { font-size: 9px; font-weight: 700; margin-top: 4px; }
+    .sticker .fuel-mpg-cell .citychy { display: flex; flex-direction: column; align-items: flex-start; margin-left: 14px; line-height: 1.05; }
+    .sticker .fuel-mpg-cell .citychy .pair { display: flex; gap: 18px; font-size: 22px; font-weight: 900; }
+    .sticker .fuel-mpg-cell .citychy .labels { display: flex; gap: 18px; font-size: 9.5px; }
+    .sticker .fuel-best { font-size: 10.5px; align-self: center; max-width: 130px; }
+    .sticker .fuel-spent { align-self: center; text-align: center; max-width: 150px; }
+    .sticker .fuel-spent .you-spent-line { font-size: 11px; font-weight: 700; }
+    .sticker .fuel-spent .spent-amount { font-size: 28px; font-weight: 900; line-height: 1; margin: 4px 0 4px; }
+    .sticker .fuel-spent .spent-sub { font-size: 9.5px; line-height: 1.2; }
+
+    .sticker .gallons-row {
+      padding: 6px 14px;
+      border-top: 1px dashed #999;
+      border-bottom: 1px solid #000;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: end;
+    }
+    .sticker .gallons-row .gallons { font-size: 18px; font-weight: 900; }
+    .sticker .gallons-row .gallons-cap { font-size: 9.5px; margin-top: 2px; }
+
+    .sticker .annual-rating {
+      display: grid; grid-template-columns: 0.85fr 1.6fr;
+      gap: 12px; padding: 12px 14px; border-bottom: 1px solid #000;
+    }
+    .sticker .annual-cost .annual-cost-line { font-size: 11px; font-weight: 800; }
+    .sticker .annual-cost .annual-cost-amount { font-size: 26px; font-weight: 900; line-height: 1; margin-top: 4px; }
+    .sticker .ghg-rating .ghg-title { font-size: 10.5px; font-weight: 800; margin-bottom: 4px; }
+    .sticker .ghg-rating .ghg-tail { font-weight: 400; font-size: 9.5px; }
+    .sticker .ghg-bar-wrapper { position: relative; margin: 6px 2px 4px; }
+    .sticker .ghg-bar {
+      position: relative; height: 18px;
+      background: linear-gradient(to right, #cdebf3 0%, #7fcde2 35%, #2e9bc1 70%, #0d6c92 100%);
+      border: 1px solid #000;
+      border-radius: 9px;
+    }
+    .sticker .ghg-marker { position: absolute; top: -2px; bottom: -2px; width: 2px; background: #000; }
+    .sticker .ghg-marker .ghg-num {
+      position: absolute; top: 100%; left: 50%; transform: translate(-50%, 0);
+      font-size: 11px; font-weight: 900; background: #fff; padding: 0 2px;
+    }
+    .sticker .ghg-scale { display: flex; justify-content: space-between; font-size: 9.5px; font-weight: 700; }
+    .sticker .epa-bottom { padding: 10px 14px 12px; font-size: 9.5px; line-height: 1.35; }
+    .sticker .epa-bottom .disclaimer { margin-bottom: 8px; }
+    .sticker .epa-bottom .feo-link { font-weight: 800; font-size: 14px; margin: 6px 0 2px; }
+    .sticker .epa-bottom .feo-sub { font-size: 9px; color: #444; }
+
+    .sticker .safety-panel .panel-title-only {
+      background: #000; color: #fff; text-align: center;
+      font-size: 14px; font-weight: 800; letter-spacing: .3px; padding: 8px 10px;
+    }
+    .sticker .safety-row {
+      display: grid; grid-template-columns: 1fr auto;
+      align-items: center; gap: 10px;
+      padding: 8px 14px; border-bottom: 1px solid #000;
+    }
+    .sticker .safety-row:last-of-type { border-bottom: none; }
+    .sticker .safety-row .row-title { font-size: 14px; font-weight: 800; }
+    .sticker .safety-row .row-sub { font-size: 10px; color: #222; margin-top: 4px; line-height: 1.3; }
+    .sticker .safety-row .right-col-stars { text-align: right; font-size: 16px; line-height: 1.1; white-space: nowrap; }
+    .sticker .safety-row .right-col-stars .stars-line {
+      display: flex; align-items: center; gap: 8px; justify-content: flex-end; font-size: 12px;
+    }
+    .sticker .safety-row .right-col-stars .stars-line .label { font-weight: 700; }
+    .sticker .safety-row .right-col-stars .stars-line .stars { font-size: 16px; letter-spacing: 1px; }
+    .sticker .safety-footer { padding: 8px 14px; font-size: 9.5px; text-align: center; line-height: 1.4; }
+
+    @media print {
+      @page { size: 13in 10in; margin: 0; }
+      html, body { background: #fff; }
+      .brand-bar, .hero, .vin-card, .status-line, .sticker-actions { display: none !important; }
+      .sticker-stage { display: block !important; padding: 0; max-width: none; }
+      .sticker { box-shadow: none; width: 100%; max-width: none; page-break-inside: avoid; }
+    }
+
+    @media (max-width: 1100px) {
+      .sticker { grid-template-columns: 1fr; }
+      .sticker .top-header { grid-template-columns: 0.4fr 1fr; }
+    }
+    @media (max-width: 700px) {
+      .hero h1 { font-size: 28px; }
+      .sticker .body-grid { grid-template-columns: 1fr; }
+      .sticker .pricing-col { border-left: none; border-top: 1px solid #b9b9b9; }
+      .sticker .fuel-main { grid-template-columns: 1fr; gap: 14px; }
+      .sticker .annual-rating { grid-template-columns: 1fr; }
+      .sticker .top-header { grid-template-columns: 1fr 2fr; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =================================================================
+       BRAND BAR
+       ================================================================= -->
+  <header class="brand-bar">
+    <img src="wincars-badge-horizontal.svg" alt="Wincars" />
+    <div class="tagline">Cars from USA &amp; Canada</div>
+  </header>
+
+  <!-- =================================================================
+       HERO
+       ================================================================= -->
+  <section class="hero">
+    <h1>Получите оригинальный <span class="accent">Window&nbsp;Sticker</span><br/>любого авто из США и Канады</h1>
+    <p>Введите 17-значный VIN — и через секунду увидите полный заводской спецификации лист с ценой, оборудованием, расходом топлива и рейтингами безопасности от NHTSA.</p>
+  </section>
+
+  <!-- =================================================================
+       VIN INPUT
+       ================================================================= -->
+  <form class="vin-card" id="vin-form" autocomplete="off">
+    <label for="vin">17-значный VIN автомобиля</label>
+    <div class="vin-row">
+      <input
+        id="vin"
+        class="vin-input"
+        type="text"
+        inputmode="latin"
+        maxlength="17"
+        placeholder="JM3KFBCM5P0102946"
+        spellcheck="false"
+        required />
+      <button class="vin-btn" type="submit" id="generate-btn">Получить стикер</button>
+    </div>
+
+    <div class="vin-help">
+      <span><b>Где найти VIN?</b> На лобовом стекле слева, на стойке двери водителя или в техпаспорте.</span>
+    </div>
+
+    <div class="sample-buttons" aria-label="Sample VINs">
+      <button type="button" data-vin="JM3KFBCM5P0102946">Демо: 2023 Mazda CX-5</button>
+    </div>
+
+    <div class="mode-toggle">
+      <label><input type="radio" name="mode" value="demo" checked /> Демо-режим (без сервера)</label>
+      <label><input type="radio" name="mode" value="api" /> Реальный API <code>/api/window-sticker</code></label>
+    </div>
+  </form>
+
+  <div class="status-line" id="status"></div>
+
+  <!-- =================================================================
+       STICKER STAGE
+       ================================================================= -->
+  <section class="sticker-stage" id="stage">
+    <div class="sticker-actions">
+      <button type="button" id="print-btn" class="primary">🖨 Скачать как PDF</button>
+      <button type="button" id="reset-btn">Очистить</button>
+    </div>
+    <div id="sticker-root"></div>
+  </section>
+
+  <!-- =================================================================
+       JS: VIN form + sticker renderer
+       ================================================================= -->
+  <script>
+    /* -----------------------------------------------------------------
+       Demo dataset — keyed by VIN. Add more entries to demo more cars
+       without a server. In production, the server proxy returns this
+       same shape from /api/window-sticker?vin=XXX.
+       ----------------------------------------------------------------- */
+    const DEMO_DB = {
+      "JM3KFBCM5P0102946": {
+        make: "MAZDA",
+        year: 2023,
+        model: "CX-5 2.5 S Carbon Edition AWD",
+        modelNumber: "CX5CEXA",
+        exteriorColor: "Polymetal Gray",
+        interiorColor: "Red",
+        pricing: { msrp: 31100, destination: 1375, totalPrice: 32640, optionsTotal: 165 },
+        warranty: [
+          { name: "Basic Warranty",      terms: "36 month/36,000 miles" },
+          { name: "Powertrain Warranty", terms: "60 month/60,000 miles" },
+          { name: "Roadside Warranty",   terms: "36 month/36,000 miles" }
+        ],
+        optionalEquipment: [
+          { category: "Interior", name: "All-Weather Floor Mats (FLA)", price: 165 },
+          { category: "Interior", name: "Red (KF4)",                    price: "included" },
+          { category: "Paint",    name: "Polymetal Gray (47C)",          price: "included" }
+        ],
+        standardEquipment: {
+          "COMFORT": [
+            "Rear under seat climate control ducts","Rear console climate control ducts",
+            "Automatic climate control","Dual-zone front climate control",
+            "Piano black door panel insert","Leatherette door trim insert",
+            "Full carpet floor covering","Leather front seat upholstery",
+            "Height adjustable front seat head restraints","Manual front seat head restraint control",
+            "Front seat armrest storage","Front passenger seat with 6-way directional controls",
+            "Driver seat with 8-way directional controls","Front seat center armrest"
+          ],
+          "CONVENIENCE": [
+            "Cargo area light","Trunk/hatch auto-latching","Overhead console storage",
+            "Cruise control with steering wheel mounted controls","Mazda Radar Cruise Control (MRCC)",
+            "Power door locks with 2 stage unlocking","Keyfob keyless entry","Tailgate/power door lock",
+            "All-in-one remote fob and ignition key","Auto-locking doors",
+            "Advanced Keyless Entry with hands-free access and push button start",
+            "Push-button","Manual folding door mirrors","Power door mirrors"
+          ],
+          "EXTERIOR AND APPEARANCE": [
+            "Rear lip spoiler","Fully galvanized steel body panels with side impact beams",
+            "Body-colored front bumper","Body-colored rear bumper",
+            "Black front and rear bumper inserts","4 doors","Black grille",
+            "Standard style side mirrors","Black door mirrors","Monotone paint",
+            "First-row sliding and tilting glass sunroof with express open activation sunshade",
+            "P225/55VR19 AS BSW front and rear tires","Rocker panel extensions","Black wheel well trim"
+          ],
+          "IN-CAR ENTERTAINMENT": [
+            "1 total number of 1st row displays","10.2 inch primary display",
+            "Fixed audio antenna","Premium grade amplifier",
+            "Centerpoint 2 digital signal processor","AudioPilot 2 speed sensitive volume",
+            "MAZDA CONNECT voice activated audio controls","Bluetooth wireless audio streaming",
+            "AM/FM/digital/satellite prep","Radio data system (RDS)",
+            "Pandora internet radio capability","10 speakers","Bose speakers"
+          ],
+          "POWERTRAIN AND MECHANICAL": [
+            "SKYACTIV-Drive 6-speed automatic",
+            "SKYACTIV-G 2.5L I-4 gasoline direct injection, DOHC, VVT variable valve control, regular unleaded, engine with cylinder deactivation and 187HP",
+            "Battery run down protection","Brake actuated limited slip differential",
+            "Permanent locking hub control","All-speed ABS and driveline traction control",
+            "All-wheel drive","I-ACTIV AWD automatic full-time AWD",
+            "Powertrain type: ICE","Spark ignition system","SKYACTIV-G 2.5L I-4 DOHC",
+            "Driver selectable drivetrain mode","Electric power-assist steering system",
+            "Speed sensitive power steering"
+          ],
+          "SAFETY AND SECURITY": [
+            "Low tire pressure warning","Turn signal indicator in door mirrors",
+            "Blind Spot Monitoring (BSM)","Rear Cross Traffic Alert (RCTA) collision warning",
+            "Lane Keep Assist System (LKAS)",
+            "Advanced Smart City Brake Support forward collision mitigation",
+            "Pedestrian impact prevention","Airbag occupancy sensor","6 airbags",
+            "4-wheel antilock (ABS) brakes","Automatic brake hold","Brake assist system",
+            "Rear mounted camera","Projector beam headlights"
+          ],
+          "TECHNOLOGY AND TELEMATICS": [
+            "MAZDA CONNECT emergency SOS system via mobile device",
+            "Bluetooth handsfree wireless device connectivity",
+            "Android Auto/Apple CarPlay smart device mirroring",
+            "Mobile hotspot internet access","4 USB ports"
+          ]
+        },
+        equipmentLayout: {
+          columnA: ["COMFORT", "CONVENIENCE", "EXTERIOR AND APPEARANCE", "IN-CAR ENTERTAINMENT"],
+          columnB: ["POWERTRAIN AND MECHANICAL", "SAFETY AND SECURITY", "TECHNOLOGY AND TELEMATICS"]
+        },
+        fuelEconomy: {
+          type: "Gasoline Vehicle",
+          combinedMpg: 26, cityMpg: 24, highwayMpg: 30,
+          gallonsPer100Miles: 3.8, annualFuelCost: 1700,
+          fuelCostVsAverage: 500, fuelCostYears: 5,
+          bestVehicleMpge: 140, ghgRating: 1
+        },
+        safetyRatings: {
+          overall: 4, frontalCrashDriver: 5, frontalCrashPassenger: 5,
+          sideCrashFrontSeat: 5, sideCrashRearSeat: 5, rollover: 4
+        },
+        country: "JAPAN", manufacturer: "MAZDA MOTOR CORP",
+        vin: "JM3KFBCM5P0102946"
+      }
+    };
+
+    /* -----------------------------------------------------------------
+       VIN validation: 17 chars, alphanumeric, no I/O/Q
+       ----------------------------------------------------------------- */
+    const VIN_RE = /^[A-HJ-NPR-Z0-9]{17}$/i;
+
+    function validateVin(vin) {
+      vin = (vin || "").trim().toUpperCase();
+      if (vin.length === 0) return { ok: false, msg: "Введите VIN." };
+      if (vin.length !== 17) return { ok: false, msg: `VIN должен быть 17 символов (сейчас ${vin.length}).` };
+      if (!VIN_RE.test(vin)) return { ok: false, msg: "VIN содержит запрещённые символы (нельзя I, O, Q)." };
+      return { ok: true, vin };
+    }
+
+    /* -----------------------------------------------------------------
+       Helpers shared with the sticker renderer
+       ----------------------------------------------------------------- */
+    const fmtUSD = n => typeof n === "number" ? "$" + n.toLocaleString("en-US") : (n ?? "");
+    const optPrice = p => p == null || p === "" ? "" : (typeof p === "string" ? p : fmtUSD(p));
+    const stars = (count, max = 5) => {
+      count = Math.max(0, Math.min(max, Math.round(count || 0)));
+      return "★".repeat(count) + "☆".repeat(max - count);
+    };
+    const escapeHtml = s => String(s ?? "")
+      .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+
+    /* -----------------------------------------------------------------
+       Sticker renderers (same as in window-sticker.html)
+       ----------------------------------------------------------------- */
+    function renderEquipmentColumn(categories, data) {
+      return categories
+        .filter(cat => data.standardEquipment[cat]?.length)
+        .map(cat => `
+          <section class="eq-section">
+            <h3>${escapeHtml(cat)}</h3>
+            <ul>${data.standardEquipment[cat].map(it => `<li>${escapeHtml(it)}</li>`).join("")}</ul>
+          </section>
+        `).join("");
+    }
+
+    function renderOptionalEquipment(items) {
+      if (!items?.length) return "";
+      const groups = [];
+      const seen = new Map();
+      items.forEach(it => {
+        const cat = it.category || "Other";
+        if (!seen.has(cat)) { seen.set(cat, groups.length); groups.push({ category: cat, items: [] }); }
+        groups[seen.get(cat)].items.push(it);
+      });
+      return groups.map(g => `
+        <div class="opt-category">${escapeHtml(g.category)}</div>
+        ${g.items.map(it => `
+          <div class="opt-row">
+            <div class="opt-name">${escapeHtml(it.name)}</div>
+            <div class="opt-price">${escapeHtml(optPrice(it.price))}</div>
+          </div>
+        `).join("")}
+      `).join("");
+    }
+
+    function renderWarranty(items) {
+      if (!items?.length) return "";
+      return `<ul>${items.map(w => `<li>${escapeHtml(w.name)} : ${escapeHtml(w.terms)}</li>`).join("")}</ul>`;
+    }
+
+    function renderEpaPanel(d) {
+      const fe = d.fuelEconomy;
+      const spentLine = (fe.fuelCostVsAverage ?? 0) >= 0
+        ? `more in fuel costs over ${fe.fuelCostYears} years`
+        : `less in fuel costs over ${fe.fuelCostYears} years`;
+      const spentAmt = "$" + Math.abs(fe.fuelCostVsAverage || 0).toLocaleString("en-US");
+      const pct = Math.max(0, Math.min(100, ((fe.ghgRating || 0) / 10) * 100));
+
+      return `
+        <div class="epa-panel">
+          <div class="panel-header">
+            <div class="epa-dot">EPA<br/>DOT</div>
+            <div class="panel-title">Fuel Economy and Environment</div>
+            <div class="fuel-badge">
+              <svg class="pump-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3h8a2 2 0 0 1 2 2v15h1a2 2 0 0 0 2-2v-8.59l-1.29-1.29 1.42-1.42 3.58 3.59c.19.19.29.45.29.71V19a3 3 0 0 1-3 3h-4v-2h4a1 1 0 0 0 1-1V11h-2a2 2 0 0 1-2-2V5H7v14h6v2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm2 4h6v3H7V7z"/></svg>
+              <span>${escapeHtml(fe.type)}</span>
+            </div>
+          </div>
+          <div class="fuel-main">
+            <div class="fuel-mpg-cell">
+              <svg class="pump" viewBox="0 0 24 24" fill="#000"><path d="M5 3h8a2 2 0 0 1 2 2v15h1a2 2 0 0 0 2-2v-8.59l-1.29-1.29 1.42-1.42 3.58 3.59c.19.19.29.45.29.71V19a3 3 0 0 1-3 3h-4v-2h4a1 1 0 0 0 1-1V11h-2a2 2 0 0 1-2-2V5H7v14h6v2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm2 4h6v3H7V7z"/></svg>
+              <div class="mpg-num">${fe.combinedMpg}</div>
+              <div class="mpg-suffix">
+                <div class="mpg-word">MPG</div>
+                <div class="mpg-cap">combined<br/>city/hwy</div>
+              </div>
+              <div class="citychy">
+                <div class="pair"><span>${fe.cityMpg}</span><span>${fe.highwayMpg}</span></div>
+                <div class="labels"><span>city</span><span>hwy</span></div>
+              </div>
+            </div>
+            <div class="fuel-best">The best vehicle rates ${fe.bestVehicleMpge} MPGe.</div>
+            <div class="fuel-spent">
+              <div class="you-spent-line">You <span style="font-size:18px;">spent</span></div>
+              <div class="spent-amount">${spentAmt}</div>
+              <div class="spent-sub">${spentLine}<br/>compared to the average new vehicle.</div>
+            </div>
+          </div>
+          <div class="gallons-row">
+            <div>
+              <div class="gallons">${fe.gallonsPer100Miles}</div>
+              <div class="gallons-cap">gallons per 100 miles</div>
+            </div>
+          </div>
+          <div class="annual-rating">
+            <div class="annual-cost">
+              <div class="annual-cost-line">Annual fuel <span style="font-weight:400;">cost</span></div>
+              <div class="annual-cost-amount">${fmtUSD(fe.annualFuelCost)}</div>
+            </div>
+            <div class="ghg-rating">
+              <div class="ghg-title">Fuel Economy &amp; Greenhouse Gas Rating <span class="ghg-tail">(tailpipe only)</span></div>
+              <div class="ghg-bar-wrapper">
+                <div class="ghg-bar"><div class="ghg-marker" style="left: ${pct}%;"><div class="ghg-num">${fe.ghgRating}</div></div></div>
+                <div class="ghg-scale"><span>0</span><span class="ghg-best">10<br/><span style="font-weight:400;">Best</span></span></div>
+              </div>
+              <div style="font-size:9.5px; margin-top:14px;">
+                The best vehicle emits 0 grams per mile (tailpipe only). Producing and
+                distributing fuel also create emissions; learn more at fueleconomy.gov
+              </div>
+            </div>
+          </div>
+          <div class="epa-bottom">
+            <div class="disclaimer">
+              <strong>Actual results will vary for many reasons, including driving conditions and how you drive and maintain your vehicle.</strong>
+              The average new vehicle gets 28 MPG and costs $8000 to fuel over 5 years. Cost estimates are based on 15000 miles
+              per year at $2.95 per gallon. MPGe is miles per gasoline gallon equivalent.
+            </div>
+            <div class="feo-link">fueleconomy.gov</div>
+            <div class="feo-sub">Calculate personalized estimates and compare vehicles</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderSafetyPanel(d) {
+      const s = d.safetyRatings;
+      return `
+        <div class="safety-panel">
+          <div class="panel-title-only">GOVERNMENT 5-STAR SAFETY RATINGS</div>
+          <div class="safety-row">
+            <div>
+              <div class="row-title">Overall Vehicle Score</div>
+              <div class="row-sub">Based on the combined ratings of frontal, side and rollover.</div>
+            </div>
+            <div class="right-col-stars"><div class="stars-line"><span class="stars">${stars(s.overall)}</span></div></div>
+          </div>
+          <div class="safety-row">
+            <div>
+              <div class="row-title">Frontal<br/>Crash</div>
+              <div class="row-sub">Based on the risk of injury in a frontal impact.</div>
+            </div>
+            <div class="right-col-stars">
+              <div class="stars-line"><span class="label">Driver</span><span class="stars">${stars(s.frontalCrashDriver)}</span></div>
+              <div class="stars-line"><span class="label">Passenger</span><span class="stars">${stars(s.frontalCrashPassenger)}</span></div>
+            </div>
+          </div>
+          <div class="safety-row">
+            <div>
+              <div class="row-title">Side<br/>Crash</div>
+              <div class="row-sub">Based on the risk of injury in a side impact.</div>
+            </div>
+            <div class="right-col-stars">
+              <div class="stars-line"><span class="label">Front seat</span><span class="stars">${stars(s.sideCrashFrontSeat)}</span></div>
+              <div class="stars-line"><span class="label">Rear seat</span><span class="stars">${stars(s.sideCrashRearSeat)}</span></div>
+            </div>
+          </div>
+          <div class="safety-row">
+            <div>
+              <div class="row-title">Rollover</div>
+              <div class="row-sub">Based on the risk of rollover in a single-vehicle crash.</div>
+            </div>
+            <div class="right-col-stars"><div class="stars-line"><span class="stars">${stars(s.rollover)}</span></div></div>
+          </div>
+          <div class="safety-footer">
+            Source: National Highway Traffic Safety Administration (NHTSA).<br/>
+            www.safecar.gov or 1-888-327-4236
+          </div>
+        </div>
+      `;
+    }
+
+    function renderWindowSticker(data, target) {
+      target.innerHTML = `
+        <div class="sticker">
+          <div class="left">
+            <div class="top-header">
+              <div class="logo-box"><img class="dealer-logo" src="wincars-badge-horizontal.svg" alt="Wincars"/></div>
+              <div class="title-box">
+                <h1>${escapeHtml(`${data.year} ${data.make} ${data.model}`)}</h1>
+                <div class="meta">
+                  <div class="item">MODEL NUMBER: <strong>${escapeHtml(data.modelNumber)}</strong></div>
+                  <div class="item">EXT: <strong>${escapeHtml(data.exteriorColor)}</strong></div>
+                  <div class="item">INT: <strong>${escapeHtml(data.interiorColor)}</strong></div>
+                </div>
+              </div>
+            </div>
+            <div class="main-body">
+              <div class="section-bar">STANDARD EQUIPMENT AT NO EXTRA COST</div>
+              <div class="body-grid">
+                <div class="eq-col">${renderEquipmentColumn(data.equipmentLayout.columnA, data)}</div>
+                <div class="eq-col">${renderEquipmentColumn(data.equipmentLayout.columnB, data)}</div>
+                <div class="pricing-col">
+                  <div class="price-row">
+                    <div class="label">Manufacturer's Suggested Retail Price</div>
+                    <div class="value">${fmtUSD(data.pricing.msrp)}</div>
+                  </div>
+                  <div class="pricing-block"><h4>Warranty Coverage:</h4>${renderWarranty(data.warranty)}</div>
+                  <div class="pricing-block"><h4>Optional Equipment</h4>${renderOptionalEquipment(data.optionalEquipment)}</div>
+                  <div class="price-row" style="margin-top:8px;">
+                    <div class="label">Optional Equipment Price</div>
+                    <div class="value">${fmtUSD(data.pricing.optionsTotal)}</div>
+                  </div>
+                  <div class="total-section">
+                    <div class="price-row">
+                      <div class="label" style="font-weight:700;">Destination and Handling</div>
+                      <div class="value">${fmtUSD(data.pricing.destination)}</div>
+                    </div>
+                    <div class="price-row grand-total">
+                      <div class="label">Total Vehicle Price</div>
+                      <div class="value">${fmtUSD(data.pricing.totalPrice)}</div>
+                    </div>
+                    <div class="pre-delivery">(includes Pre-Delivery Service)</div>
+                    <div class="legal">License and title fees, state and local taxes, and dealer options are not included.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="vehicle-footer">
+              <div class="footer-info">
+                <div class="row"><span class="label">Country:</span><span>${escapeHtml(data.country)}</span></div>
+                <div class="row"><span class="label">Manufacturer:</span><span>${escapeHtml(data.manufacturer)}</span></div>
+                <div class="row"><span class="label">VIN:</span><span>${escapeHtml(data.vin)}</span></div>
+              </div>
+              <div class="footer-brand">
+                <span class="powered">Powered by</span>
+                <img class="pill-logo" src="wincars-badge-horizontal.svg" alt="Wincars"/>
+              </div>
+            </div>
+          </div>
+          <div class="right">
+            ${renderEpaPanel(data)}
+            ${renderSafetyPanel(data)}
+          </div>
+        </div>
+      `;
+    }
+
+    /* -----------------------------------------------------------------
+       Form wiring
+       ----------------------------------------------------------------- */
+    const $vin    = document.getElementById("vin");
+    const $form   = document.getElementById("vin-form");
+    const $btn    = document.getElementById("generate-btn");
+    const $status = document.getElementById("status");
+    const $stage  = document.getElementById("stage");
+    const $root   = document.getElementById("sticker-root");
+    const $reset  = document.getElementById("reset-btn");
+    const $print  = document.getElementById("print-btn");
+
+    function setStatus(text, kind = "") {
+      $status.className = "status-line" + (kind ? " " + kind : "");
+      $status.innerHTML = text;
+    }
+
+    function getMode() {
+      return document.querySelector('input[name="mode"]:checked').value;
+    }
+
+    async function fetchFromApi(vin) {
+      const r = await fetch(`/api/window-sticker?vin=${encodeURIComponent(vin)}`);
+      if (!r.ok) {
+        const t = await r.text().catch(() => "");
+        throw new Error(`HTTP ${r.status} ${t.slice(0, 200)}`);
+      }
+      return r.json();
+    }
+
+    function fetchFromDemo(vin) {
+      const data = DEMO_DB[vin];
+      if (!data) {
+        const known = Object.keys(DEMO_DB).join(", ") || "(none)";
+        throw new Error(`Демо-режим знает только VIN: ${known}. Для остальных VIN включи API-режим и запусти server.js.`);
+      }
+      return data;
+    }
+
+    async function generate(vin) {
+      $btn.disabled = true;
+      setStatus(`<span class="loader"></span> Запрашиваю данные по VIN <b>${escapeHtml(vin)}</b>…`);
+      try {
+        const data = (getMode() === "api")
+          ? await fetchFromApi(vin)
+          : fetchFromDemo(vin);
+        renderWindowSticker(data, $root);
+        $stage.classList.add("visible");
+        setStatus(`Готово! Стикер для <b>${escapeHtml(data.year)} ${escapeHtml(data.make)} ${escapeHtml(data.model)}</b>.`, "success");
+        $stage.scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch (err) {
+        setStatus("⚠️ " + escapeHtml(err.message || "Ошибка."), "error");
+      } finally {
+        $btn.disabled = false;
+      }
+    }
+
+    $form.addEventListener("submit", e => {
+      e.preventDefault();
+      const v = validateVin($vin.value);
+      if (!v.ok) {
+        $vin.classList.add("invalid");
+        setStatus("⚠️ " + v.msg, "error");
+        return;
+      }
+      $vin.classList.remove("invalid");
+      $vin.value = v.vin;
+      generate(v.vin);
+    });
+
+    $vin.addEventListener("input", () => $vin.classList.remove("invalid"));
+
+    document.querySelectorAll(".sample-buttons button").forEach(btn => {
+      btn.addEventListener("click", () => {
+        $vin.value = btn.dataset.vin;
+        $form.requestSubmit();
+      });
+    });
+
+    $reset.addEventListener("click", () => {
+      $stage.classList.remove("visible");
+      $root.innerHTML = "";
+      $vin.value = "";
+      setStatus("");
+      $vin.focus();
+    });
+
+    $print.addEventListener("click", () => window.print());
+  </script>
+
+</body>
+</html>
