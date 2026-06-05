@@ -118,7 +118,6 @@ function pickFirst(obj, ...keys) {
 }
 
 function mapMarketCheckToSticker(raw, vin) {
-  // MarketCheck may wrap in { data: {...} } or return at top level
   const d = (raw && raw.data) ? raw.data : (raw || {});
 
   // Year / Make / Model
@@ -126,119 +125,151 @@ function mapMarketCheckToSticker(raw, vin) {
   const make  = safeStr(pickFirst(d, "make", "manufacturer", "brand")).toUpperCase();
   const baseModel = safeStr(pickFirst(d, "model", "model_name"));
   const trim  = safeStr(pickFirst(d, "trim", "trim_name"));
-  const style = safeStr(pickFirst(d, "style", "trim_and_style", "vehicle_type"));
-  const modelFull = [baseModel, trim, style].filter(Boolean).join(" ").replace(/\s+/g, " ").trim();
+  const modelFull = [baseModel, trim].filter(Boolean).join(" ").replace(/\s+/g, " ").trim();
 
   // Pricing
-  const msrp        = parseNum(pickFirst(d, "msrp", "base_msrp", "base_price"));
-  const destination = parseNum(pickFirst(d, "destination", "destination_charge", "delivery_charges"));
-  const optionsTotal = parseNum(pickFirst(d, "options_total", "options_price"));
-  const invoiceP    = parseNum(pickFirst(d, "invoice", "invoice_price"));
-  const totalPrice  = parseNum(pickFirst(d, "total_price", "total_msrp")) || (msrp + destination + optionsTotal);
+  const msrp         = parseNum(pickFirst(d, "msrp", "base_msrp", "base_price"));
+  const destination  = parseNum(pickFirst(d, "delivery_charges", "destination", "destination_charge"));
+  const optionsTotal = parseNum(pickFirst(d, "installed_options_msrp", "options_total", "options_price"));
+  const totalPrice   = parseNum(pickFirst(d, "combined_msrp", "total_price", "total_msrp")) || (msrp + destination + optionsTotal);
 
-  // Engine
-  const engineObj = d.engine || d.powertrain || {};
-  const engineParts = [];
-  const disp = pickFirst(engineObj, "displacement", "engine_size", "size");
-  if (disp) engineParts.push(typeof disp === "number" && disp > 100 ? `${(disp / 1000).toFixed(1)}L` : String(disp));
-  const cylinders = pickFirst(engineObj, "cylinders", "engine_cylinders");
-  if (cylinders) engineParts.push(`I-${cylinders}`.replace("I-I-", "I-"));
-  const compressor = pickFirst(engineObj, "compressor", "aspiration");
-  if (compressor && /turbo/i.test(String(compressor))) engineParts.push("Turbo");
-  engineParts.push("Engine");
-  const engine = engineParts.filter(Boolean).join(" ");
+  // Engine — MarketCheck returns a string like "2.0L I4"
+  const engine = (typeof d.engine === "string")
+    ? d.engine + " Engine"
+    : (() => {
+        const e = d.engine || d.powertrain || {};
+        const parts = [];
+        const disp = pickFirst(e, "displacement", "engine_size", "size");
+        if (disp) parts.push(typeof disp === "number" && disp > 100 ? `${(disp / 1000).toFixed(1)}L` : String(disp));
+        const cyl = pickFirst(e, "cylinders", "engine_cylinders");
+        if (cyl) parts.push(`I-${cyl}`);
+        if (/turbo/i.test(String(pickFirst(e, "compressor", "aspiration") || ""))) parts.push("Turbo");
+        parts.push("Engine");
+        return parts.filter(Boolean).join(" ");
+      })();
 
-  // Transmission
-  const transObj = d.transmission || {};
+  // Transmission — MarketCheck returns a string
   const transmission = safeStr(
-    typeof transObj === "string" ? transObj :
-    pickFirst(transObj, "name", "description", "type")
+    typeof d.transmission === "string" ? d.transmission :
+    pickFirst(d.transmission || {}, "name", "description", "type")
   );
 
   // Drivetrain
   const drivetrain = safeStr(pickFirst(d, "drivetrain", "drive_type", "driveline"));
+
+  // Powertrain type (HEV/EV/etc) — append to engine description for richness
+  const powertrainType = safeStr(d.powertrain_type);
+  const engineFull = powertrainType && !engine.toLowerCase().includes(powertrainType.toLowerCase())
+    ? `${engine} (${powertrainType})`
+    : engine;
 
   // Colors
   const exteriorColor = safeStr(pickFirst(d, "exterior_color", "ext_color"));
   const interiorColor = safeStr(pickFirst(d, "interior_color", "int_color"));
 
   // Body / doors / seats
-  const bodyType = safeStr(pickFirst(d, "body_type", "body_style", "vehicle_class"));
+  const bodyType = safeStr(pickFirst(d, "body_type", "body_style", "vehicle_class", "vehicle_type"));
   const doors    = safeStr(pickFirst(d, "doors", "num_doors"));
-  const seats    = safeStr(pickFirst(d, "seating", "seats", "max_seating"));
+  const seats    = safeStr(pickFirst(d, "seating_capacity", "seating", "seats", "max_seating"));
 
-  // Fuel economy
-  const mpg = d.epa_mileage || d.mpg || d.fuel_economy || {};
+  // Fuel economy — MarketCheck has these at top level
   const fuelEconomy = {
     type:                safeStr(pickFirst(d, "fuel_type", "fuel", "fuel_grade") || "Gasoline") + " Vehicle",
-    combinedMpg:         parseNum(pickFirst(mpg, "combined", "combined_mpg", "epa_combined", "epa_combined_economy")),
-    cityMpg:             parseNum(pickFirst(mpg, "city",     "city_mpg",     "epa_city",     "epa_city_economy")),
-    highwayMpg:          parseNum(pickFirst(mpg, "highway",  "highway_mpg",  "epa_highway",  "epa_hwy_economy")),
+    combinedMpg:         parseNum(pickFirst(d, "combined_mpg", "epa_combined")),
+    cityMpg:             parseNum(pickFirst(d, "city_mpg", "epa_city")),
+    highwayMpg:          parseNum(pickFirst(d, "highway_mpg", "epa_highway")),
     gallonsPer100Miles:  0,
-    annualFuelCost:      parseNum(pickFirst(mpg, "annual_fuel_cost", "annual_cost")),
+    annualFuelCost:      0,
     fuelCostVsAverage:   0, fuelCostYears: 5, bestVehicleMpge: 140, ghgRating: 0
   };
   if (fuelEconomy.combinedMpg) {
     fuelEconomy.gallonsPer100Miles = +(100 / fuelEconomy.combinedMpg).toFixed(1);
   }
 
-  // Safety ratings (NHTSA-style 1–5 stars)
-  const sr = d.safety_ratings || d.nhtsa || d.nhtsa_safety || {};
-  const findStar = (...keys) => {
-    for (const k of keys) {
-      const v = sr[k];
-      if (v !== undefined && v !== null && v !== "") return parseNum(v);
-    }
-    return 0;
-  };
+  // Safety ratings — MarketCheck uses { rating: { safety: { front, side, overall }, rollover } }
+  const ratingObj = d.rating || {};
+  const safetyObj = ratingObj.safety || d.safety_ratings || {};
   const safetyRatings = {
-    overall:               findStar("overall", "overall_rating", "overall_stars"),
-    frontalCrashDriver:    findStar("frontal_driver", "frontal_crash_driver", "driver"),
-    frontalCrashPassenger: findStar("frontal_passenger", "frontal_crash_passenger", "passenger"),
-    sideCrashFrontSeat:    findStar("side_front", "side_crash_front", "side_driver"),
-    sideCrashRearSeat:     findStar("side_rear", "side_crash_rear", "side_passenger"),
-    rollover:              findStar("rollover", "rollover_rating")
+    overall:               parseNum(pickFirst(safetyObj, "overall", "overall_rating")),
+    frontalCrashDriver:    parseNum(pickFirst(safetyObj, "front", "frontal_driver", "driver")),
+    frontalCrashPassenger: parseNum(pickFirst(safetyObj, "front", "frontal_passenger", "passenger")),
+    sideCrashFrontSeat:    parseNum(pickFirst(safetyObj, "side", "side_front", "side_driver")),
+    sideCrashRearSeat:     parseNum(pickFirst(safetyObj, "side", "side_rear", "side_passenger")),
+    rollover:              parseNum(pickFirst(ratingObj, "rollover", "rollover_rating"))
   };
 
-  // ---- safe-array helper: takes anything, returns array ----
-  const toArray = v => {
-    if (Array.isArray(v)) return v;
-    if (v && typeof v === "object") return Object.values(v).filter(x => x && typeof x === "object");
-    return [];
-  };
+  // ---- Warranty: MarketCheck returns OBJECT with keys total/powertrain/anti_corrosion/roadside_assistance
+  // Each inner: { duration: months, distance: miles }
+  const wObj = d.warranty || {};
+  const warrantyMap = [
+    { key: "total",                name: "Basic Warranty" },
+    { key: "powertrain",           name: "Powertrain Warranty" },
+    { key: "anti_corrosion",       name: "Anti-Corrosion Warranty" },
+    { key: "roadside_assistance",  name: "Roadside Assistance" }
+  ];
+  const warranty = warrantyMap
+    .filter(w => wObj[w.key] && (wObj[w.key].duration || wObj[w.key].distance))
+    .map(w => {
+      const inner = wObj[w.key];
+      const months = inner.duration;
+      const miles  = inner.distance;
+      const milesStr = (miles && miles !== 999999) ? `${Number(miles).toLocaleString("en-US")} miles` : null;
+      const terms = [months ? `${months} months` : null, milesStr].filter(Boolean).join(" / ");
+      return { name: w.name, terms: terms || "—" };
+    });
 
-  // Warranty
-  const warrantiesRaw = toArray(d.warranties || d.warranty);
-  const warranty = warrantiesRaw.map(w => ({
-    name: safeStr(pickFirst(w, "type", "name", "title")).replace(/\b\w/g, c => c.toUpperCase()),
-    terms: w.miles
-      ? `${w.months || w.term_months || "?"} months / ${w.miles} miles`
-      : (w.terms || `${w.months || "?"} months`)
+  // ---- Optional equipment: from installed_options_details array
+  const optionsRaw = Array.isArray(d.installed_options_details) ? d.installed_options_details : [];
+  const optionalEquipment = optionsRaw.map(o => ({
+    category: "Installed Options",
+    name:     safeStr(o.name || o.description),
+    price:    parseNum(o.msrp ?? o.sale_price),
+    features: []
   }));
 
-  // Optional equipment (options / packages)
-  const optionsRaw = toArray(d.options || d.installed_options || d.packages);
-  const optionalEquipment = optionsRaw
-    .filter(o => o && (o.name || o.description || o.title))
-    .map(o => ({
-      category: safeStr(pickFirst(o, "category", "type", "group") || "Other")
-                  .replace(/_/g, " ")
-                  .replace(/\w\S*/g, t => t[0].toUpperCase() + t.slice(1).toLowerCase()),
-      name:     safeStr(pickFirst(o, "name", "description", "title")),
-      price:    parseNum(pickFirst(o, "price", "msrp")) || (o.price ?? "included"),
-      features: Array.isArray(o.features) ? o.features : []
-    }));
+  // ---- Standard equipment: features.STANDARD array — categorise by `category` field
+  const featuresObj = d.features || {};
+  const standardFeatures = Array.isArray(featuresObj.STANDARD) ? featuresObj.STANDARD : [];
 
-  // Standard equipment / features
-  const featuresRaw = toArray(
-    d.installed_equipment || d.features || d.standard_features || d.standard_options || d.installed_features
-  );
-  const featureStrings = featuresRaw.flatMap(f => {
-    if (typeof f === "string") return [f];
-    if (f && (f.name || f.description || f.title)) return [safeStr(f.name || f.description || f.title)];
-    if (f && Array.isArray(f.items)) return f.items.map(safeStr);
-    return [];
-  });
+  const standardEquipment = {
+    "COMFORT": [], "CONVENIENCE": [],
+    "EXTERIOR AND APPEARANCE": [],
+    "IN-CAR ENTERTAINMENT": [],
+    "POWERTRAIN AND MECHANICAL": [],
+    "SAFETY AND SECURITY": [],
+    "TECHNOLOGY AND TELEMATICS": []
+  };
+
+  const COMFORT_HINT = /seat|head\s?rest|leather|heated|ventilated|armrest|lumbar|climate|air condition|hvac|carpet|cushion|sunroof|moonroof|cup\s?holder|vanity|console|massage/i;
+  const TECH_HINT    = /bluetooth|usb|smartphone|navigation|wifi|wireless|carplay|android auto|sirius|hd radio|aux audio|streaming|charg|garage door|homelink|pre-?sense|premium audio|sound system|infotainment|voice|telematic|app/i;
+
+  for (const f of standardFeatures) {
+    const desc = safeStr(f.description || f.feature_type);
+    if (!desc) continue;
+    const cat = safeStr(f.category).toLowerCase();
+    let bucket;
+    if (cat.includes("safety") || cat.includes("driver assist")) {
+      bucket = "SAFETY AND SECURITY";
+    } else if (cat.includes("infotainment") || cat.includes("entertainment")) {
+      bucket = TECH_HINT.test(desc) ? "TECHNOLOGY AND TELEMATICS" : "IN-CAR ENTERTAINMENT";
+    } else if (cat.includes("engine") || cat.includes("transmission") || cat.includes("powertrain") || cat.includes("suspension") || cat.includes("hybrid") || cat.includes("electric") || cat.includes("fuel") || cat.includes("brake")) {
+      bucket = "POWERTRAIN AND MECHANICAL";
+    } else if (cat.includes("exterior")) {
+      bucket = "EXTERIOR AND APPEARANCE";
+    } else if (cat.includes("comfort") || cat.includes("convenience")) {
+      bucket = COMFORT_HINT.test(desc) ? "COMFORT" : "CONVENIENCE";
+    } else if (cat.includes("interior")) {
+      bucket = COMFORT_HINT.test(desc) ? "COMFORT" : "CONVENIENCE";
+    } else {
+      bucket = "CONVENIENCE";
+    }
+    standardEquipment[bucket].push(desc);
+  }
+
+  // Dedupe
+  for (const k in standardEquipment) {
+    standardEquipment[k] = [...new Set(standardEquipment[k])];
+  }
 
   // Categorise features into our 7 sticker buckets
   const COMFORT_RX = /seat|head\s?rest|leather|heated|ventilated|armrest|lumbar|recline|climate|air condition|hvac|heater|carpet|trim|cup\s?holder|sunroof|moonroof|sunshade|cushion/i;
@@ -271,11 +302,12 @@ function mapMarketCheckToSticker(raw, vin) {
     make,
     year,
     model: modelFull || baseModel,
-    modelNumber:  safeStr(pickFirst(d, "model_number", "style_id", "model_code")),
-    exteriorColor, interiorColor,
+    modelNumber:  safeStr(pickFirst(d, "manufacturer_code", "model_number", "style_id", "model_code")),
+    exteriorColor: safeStr(pickFirst(d, "exterior_color", "ext_color")),
+    interiorColor: safeStr(pickFirst(d, "interior_color", "int_color")),
     bodyType, doors, seats,
     pricing: { msrp, destination, totalPrice, optionsTotal },
-    engine,
+    engine: engineFull,
     transmission,
     drivetrain,
     summary: safeStr(pickFirst(d, "summary", "description")),
@@ -288,7 +320,7 @@ function mapMarketCheckToSticker(raw, vin) {
     },
     fuelEconomy,
     safetyRatings,
-    country:      safeStr(pickFirst(d, "country_of_origin", "country", "manufacturer_country")),
+    country:      safeStr(pickFirst(d, "country", "country_of_origin", "manufacturer_country")),
     manufacturer: safeStr(pickFirst(d, "manufacturer", "make") || make),
     vin
   };
