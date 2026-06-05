@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="pl">
+<html lang="ru">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Wincars · Naklejka okienna VIN</title>
+  <title>Wincars · Window Sticker по VIN</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; }
     html, body {
@@ -13,7 +13,7 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ============ HEADER ============ */
+    /* HEADER */
     .brand-bar {
       background: #000;
       padding: 14px 24px;
@@ -49,7 +49,7 @@
       color: #444; font-size: 16px; line-height: 1.5;
     }
 
-    /* ============ VIN FORM ============ */
+    /* VIN FORM */
     .vin-card {
       max-width: 720px; margin: 24px auto 0;
       padding: 28px 28px 24px;
@@ -143,7 +143,7 @@
       padding: 0 16px;
     }
 
-    /* ============ STICKER ============ */
+    /* STICKER */
     .sticker { background: #fff; border: 2px solid #000; padding: 16px; font-size: 11px; line-height: 1.3; }
     .sticker-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
     .sticker-header { display: grid; grid-template-columns: 220px 1fr; gap: 12px; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 10px; }
@@ -200,40 +200,40 @@
 
   <header class="brand-bar">
     <div class="logo">★ WINCARS</div>
-    <div class="tagline">Twoje auto z USA i Kanady</div>
+    <div class="tagline">Авто из США и Канады</div>
   </header>
 
   <main class="hero">
-    <h1>Naklejka okienna <span class="yellow">dla każdego auta</span><br/>z USA i Kanady</h1>
-    <p>Wpisz 17-znakowy numer VIN — w sekundę zobaczysz pełną fabryczną specyfikację: cenę, wyposażenie, zużycie paliwa i oceny bezpieczeństwa NHTSA.</p>
+    <h1>Window sticker для <span class="yellow">любого авто</span><br/>из США и Канады</h1>
+    <p>Введите 17-значный VIN — и через секунду увидите полный заводской спецификации лист с ценой, оборудованием, расходом топлива и рейтингами безопасности от NHTSA.</p>
   </main>
 
   <form class="vin-card" id="vin-form" autocomplete="off">
-    <label class="field" for="vin">17-znakowy numer VIN pojazdu</label>
+    <label class="field" for="vin">17-значный VIN автомобиля</label>
     <div class="vin-row">
       <input
         id="vin"
         class="vin-input"
         type="text"
-        placeholder="np. WAUENAF45JA025606"
+        placeholder="например, WAUENAF45JA025606"
         maxlength="17"
         spellcheck="false"
       />
-      <button class="vin-btn" type="submit" id="generate-btn">Pobierz naklejkę</button>
+      <button class="vin-btn" type="submit" id="generate-btn">Получить стикер</button>
     </div>
     <div class="vin-help">
-      <span><b>Gdzie znaleźć VIN?</b> Na przedniej szybie po lewej, na słupku drzwi kierowcy lub w dowodzie rejestracyjnym.</span>
+      <span><b>Где найти VIN?</b> На лобовом стекле слева, на стойке двери водителя или в техпаспорте.</span>
     </div>
-    <div class="sample-buttons" aria-label="Przykładowe VIN-y">
-      <button type="button" data-vin="WAUENAF45JA025606">Demo: 2018 Audi A4</button>
-      <button type="button" data-vin="3FA6P0RU3HR360408">Demo: 2017 Ford Fusion Hybrid</button>
+    <div class="sample-buttons" aria-label="Демо VIN">
+      <button type="button" data-vin="WAUENAF45JA025606">Демо: 2018 Audi A4</button>
+      <button type="button" data-vin="3FA6P0RU3HR360408">Демо: 2017 Ford Fusion Hybrid</button>
     </div>
   </form>
 
   <div class="status-line" id="status"></div>
   <div class="sticker-actions" id="sticker-actions" style="display:none;">
-    <button type="button" id="print-btn" class="btn-pdf">🖨 Pobierz jako PDF</button>
-    <button type="button" id="reset-btn" class="btn-clear">↻ Wyczyść</button>
+    <button type="button" id="print-btn" class="btn-pdf">🖨 Скачать как PDF</button>
+    <button type="button" id="reset-btn" class="btn-clear">↻ Очистить</button>
   </div>
 
   <section class="sticker-host" id="sticker-host"></section>
@@ -243,15 +243,15 @@
 
     function validateVin(vin) {
       vin = (vin || "").trim().toUpperCase();
-      if (!vin) return { ok: false, msg: "Wpisz VIN." };
-      if (vin.length !== 17) return { ok: false, msg: `VIN musi mieć 17 znaków (obecnie ${vin.length}).` };
-      if (!VIN_RE.test(vin)) return { ok: false, msg: "VIN zawiera niedozwolone znaki (nie wolno I, O, Q)." };
+      if (!vin) return { ok: false, msg: "Введите VIN." };
+      if (vin.length !== 17) return { ok: false, msg: `VIN должен быть 17 символов (сейчас ${vin.length}).` };
+      if (!VIN_RE.test(vin)) return { ok: false, msg: "VIN содержит запрещённые символы (нельзя I, O, Q)." };
       return { ok: true, vin };
     }
 
     const escapeHtml = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
     const fmtPrice = n => {
-      if (n === "included" || n === "w cenie") return "w cenie";
+      if (n === "included") return "включено";
       if (typeof n !== "number") return n || "";
       return "$" + n.toLocaleString("en-US");
     };
@@ -277,7 +277,7 @@
 
       const optionalHtml = Object.keys(optionalByCat).length ? `
         <div class="sticker-section">
-          <h3>Wyposażenie opcjonalne</h3>
+          <h3>Опциональное оборудование</h3>
           ${Object.entries(optionalByCat).map(([cat, items]) => `
             <h4>${escapeHtml(cat)}</h4>
             ${items.map(o => `
@@ -289,30 +289,30 @@
 
       const warrantyHtml = (data.warranty && data.warranty.length) ? `
         <div class="sticker-section">
-          <h3>Gwarancja</h3>
+          <h3>Гарантия</h3>
           <ul>${data.warranty.map(w => `<li><b>${escapeHtml(w.name)}:</b> ${escapeHtml(w.terms)}</li>`).join("")}</ul>
         </div>` : "";
 
       const pricing = data.pricing || {};
       const pricingHtml = `
         <div class="sticker-section">
-          <h3>Cennik (USD)</h3>
+          <h3>Цены (USD)</h3>
           <div class="sticker-pricing">
-            <div class="row"><span>MSRP (cena bazowa)</span><span>${fmtPrice(pricing.msrp)}</span></div>
-            ${pricing.optionsTotal ? `<div class="row"><span>Opcje</span><span>${fmtPrice(pricing.optionsTotal)}</span></div>` : ""}
-            <div class="row"><span>Dostawa</span><span>${fmtPrice(pricing.destination)}</span></div>
-            <div class="row total"><span>RAZEM</span><span>${fmtPrice(pricing.totalPrice)}</span></div>
+            <div class="row"><span>MSRP (базовая цена)</span><span>${fmtPrice(pricing.msrp)}</span></div>
+            ${pricing.optionsTotal ? `<div class="row"><span>Опции</span><span>${fmtPrice(pricing.optionsTotal)}</span></div>` : ""}
+            <div class="row"><span>Доставка</span><span>${fmtPrice(pricing.destination)}</span></div>
+            <div class="row total"><span>ИТОГО</span><span>${fmtPrice(pricing.totalPrice)}</span></div>
           </div>
         </div>`;
 
       const fe = data.fuelEconomy || {};
       const fuelHtml = (fe.combinedMpg) ? `
         <div class="sticker-section">
-          <h3>Zużycie paliwa (EPA)</h3>
+          <h3>Расход топлива (EPA)</h3>
           <div class="sticker-pricing">
-            <div class="row"><span>Średnio MPG</span><span><b>${fe.combinedMpg}</b></span></div>
-            <div class="row"><span>Miasto / Trasa</span><span>${fe.cityMpg} / ${fe.highwayMpg}</span></div>
-            ${fe.annualFuelCost ? `<div class="row"><span>Roczny koszt paliwa</span><span>$${fe.annualFuelCost}</span></div>` : ""}
+            <div class="row"><span>Combined MPG</span><span><b>${fe.combinedMpg}</b></span></div>
+            <div class="row"><span>Город / Трасса</span><span>${fe.cityMpg} / ${fe.highwayMpg}</span></div>
+            ${fe.annualFuelCost ? `<div class="row"><span>Годовая стоимость топлива</span><span>$${fe.annualFuelCost}</span></div>` : ""}
           </div>
         </div>` : "";
 
@@ -320,13 +320,13 @@
       const stars = n => "★".repeat(n) + "☆".repeat(Math.max(0, 5 - n));
       const safetyHtml = (sr.overall) ? `
         <div class="sticker-section">
-          <h3>Oceny bezpieczeństwa NHTSA</h3>
+          <h3>Рейтинги безопасности NHTSA</h3>
           <div class="sticker-pricing">
-            <div class="row"><span>Ogólna ocena</span><span>${stars(sr.overall)}</span></div>
-            <div class="row"><span>Czołowe (kierowca)</span><span>${stars(sr.frontalCrashDriver)}</span></div>
-            <div class="row"><span>Czołowe (pasażer)</span><span>${stars(sr.frontalCrashPassenger)}</span></div>
-            <div class="row"><span>Boczne (przód)</span><span>${stars(sr.sideCrashFrontSeat)}</span></div>
-            <div class="row"><span>Dachowanie</span><span>${stars(sr.rollover)}</span></div>
+            <div class="row"><span>Общая оценка</span><span>${stars(sr.overall)}</span></div>
+            <div class="row"><span>Лобовое (водитель)</span><span>${stars(sr.frontalCrashDriver)}</span></div>
+            <div class="row"><span>Лобовое (пассажир)</span><span>${stars(sr.frontalCrashPassenger)}</span></div>
+            <div class="row"><span>Боковое (перед)</span><span>${stars(sr.sideCrashFrontSeat)}</span></div>
+            <div class="row"><span>Опрокидывание</span><span>${stars(sr.rollover)}</span></div>
           </div>
         </div>` : "";
 
@@ -340,17 +340,17 @@
             <div class="sticker-title">
               <h2>${escapeHtml(data.year)} ${escapeHtml(data.make)} ${escapeHtml(data.model)}</h2>
               <div class="meta">
-                ${data.modelNumber ? `<b>NR MODELU:</b> ${escapeHtml(data.modelNumber)} &nbsp; ` : ""}
+                ${data.modelNumber ? `<b>НОМЕР МОДЕЛИ:</b> ${escapeHtml(data.modelNumber)} &nbsp; ` : ""}
                 ${data.exteriorColor ? `<b>EXT:</b> ${escapeHtml(data.exteriorColor)} &nbsp; ` : ""}
                 ${data.interiorColor ? `<b>INT:</b> ${escapeHtml(data.interiorColor)}` : ""}
               </div>
-              ${data.engine ? `<div class="meta"><b>Silnik:</b> ${escapeHtml(data.engine)} &nbsp; <b>Skrzynia:</b> ${escapeHtml(data.transmission || "")} &nbsp; <b>Napęd:</b> ${escapeHtml(data.drivetrain || "")}</div>` : ""}
+              ${data.engine ? `<div class="meta"><b>Двигатель:</b> ${escapeHtml(data.engine)} &nbsp; <b>Коробка:</b> ${escapeHtml(data.transmission || "")} &nbsp; <b>Привод:</b> ${escapeHtml(data.drivetrain || "")}</div>` : ""}
             </div>
           </div>
 
           <div class="sticker-grid">
             <div>
-              <div class="sticker-section"><h3>Wyposażenie standardowe (chyba że zastąpione opcjonalnym)</h3></div>
+              <div class="sticker-section"><h3>Стандартное оборудование (если не заменено опциональным)</h3></div>
               ${renderColumn(layout.columnA)}
             </div>
             <div>
@@ -368,8 +368,8 @@
           <div class="sticker-footer">
             <div>
               <b>VIN:</b> ${escapeHtml(data.vin)} &nbsp; · &nbsp;
-              ${data.country ? `<b>Kraj:</b> ${escapeHtml(data.country)} &nbsp; · &nbsp;` : ""}
-              ${data.manufacturer ? `<b>Producent:</b> ${escapeHtml(data.manufacturer)}` : ""}
+              ${data.country ? `<b>Страна:</b> ${escapeHtml(data.country)} &nbsp; · &nbsp;` : ""}
+              ${data.manufacturer ? `<b>Производитель:</b> ${escapeHtml(data.manufacturer)}` : ""}
             </div>
             <div class="powered-by">POWERED BY ★ WINCARS</div>
           </div>
@@ -399,15 +399,15 @@
 
     async function generate(vin) {
       $btn.disabled = true;
-      setStatus(`<span class="loader"></span> Pobieram dane dla VIN <b>${escapeHtml(vin)}</b>…`);
+      setStatus(`<span class="loader"></span> Запрашиваю данные по VIN <b>${escapeHtml(vin)}</b>…`);
       try {
         const data = await fetchFromApi(vin);
         if (!data.year && !data.make && !data.model) {
-          throw new Error("API nie zwróciło danych dla tego VIN.");
+          throw new Error("API не вернул данных для этого VIN.");
         }
         $host.innerHTML = renderSticker(data);
         $actions.style.display = "flex";
-        setStatus(`✅ Gotowe! Naklejka dla <b>${escapeHtml(data.year)} ${escapeHtml(data.make)} ${escapeHtml(data.model)}</b>`, "ok");
+        setStatus(`✅ Готово! Стикер для <b>${escapeHtml(data.year)} ${escapeHtml(data.make)} ${escapeHtml(data.model)}</b>`, "ok");
       } catch (err) {
         $host.innerHTML = "";
         $actions.style.display = "none";
