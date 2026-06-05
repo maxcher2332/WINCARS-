@@ -271,33 +271,6 @@ function mapMarketCheckToSticker(raw, vin) {
     standardEquipment[k] = [...new Set(standardEquipment[k])];
   }
 
-  // Categorise features into our 7 sticker buckets
-  const COMFORT_RX = /seat|head\s?rest|leather|heated|ventilated|armrest|lumbar|recline|climate|air condition|hvac|heater|carpet|trim|cup\s?holder|sunroof|moonroof|sunshade|cushion/i;
-  const TECH_RX    = /bluetooth|usb|smartphone|voice|navigation|wifi|wireless|carplay|android auto|sirius|hd radio|aux audio|streaming|wireless charg|garage door|homelink|pre-?sense|premium audio|sound system|infotainment/i;
-  const SAFE_RX    = /airbag|abs|brake|stability|traction|warning|monitoring|lane|crash|safety|alarm|theft|key|child|cruise/i;
-  const POW_RX     = /engine|transmission|cylinder|drivetrain|drive type|axle|suspension|differential|alternator|battery|exhaust/i;
-  const EXT_RX     = /wheel|tire|rim|spoiler|bumper|grille|fog|headl|tail\s?l|mirror|door handle|paint|moulding|trim ring|panoramic|wiper/i;
-  const ENT_RX     = /radio|speaker|amplif|subwoofer|cd|dvd|sd card|aux|usb|bluetooth|connected services|carplay|android/i;
-
-  const standardEquipment = {
-    "COMFORT": [],
-    "CONVENIENCE": [],
-    "EXTERIOR AND APPEARANCE": [],
-    "IN-CAR ENTERTAINMENT": [],
-    "POWERTRAIN AND MECHANICAL": [],
-    "SAFETY AND SECURITY": [],
-    "TECHNOLOGY AND TELEMATICS": []
-  };
-  for (const f of featureStrings) {
-    if (SAFE_RX.test(f))       standardEquipment["SAFETY AND SECURITY"].push(f);
-    else if (POW_RX.test(f))   standardEquipment["POWERTRAIN AND MECHANICAL"].push(f);
-    else if (EXT_RX.test(f))   standardEquipment["EXTERIOR AND APPEARANCE"].push(f);
-    else if (ENT_RX.test(f))   standardEquipment["IN-CAR ENTERTAINMENT"].push(f);
-    else if (TECH_RX.test(f))  standardEquipment["TECHNOLOGY AND TELEMATICS"].push(f);
-    else if (COMFORT_RX.test(f)) standardEquipment["COMFORT"].push(f);
-    else                       standardEquipment["CONVENIENCE"].push(f);
-  }
-
   // Colors — MarketCheck sometimes returns objects { name, code }; pull a string out safely
   const extractColor = (v) => {
     if (!v) return "";
