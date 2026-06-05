@@ -298,13 +298,21 @@ function mapMarketCheckToSticker(raw, vin) {
     else                       standardEquipment["CONVENIENCE"].push(f);
   }
 
+  // Colors — MarketCheck sometimes returns objects { name, code }; pull a string out safely
+  const extractColor = (v) => {
+    if (!v) return "";
+    if (typeof v === "string") return v;
+    if (typeof v === "object") return safeStr(v.name || v.description || v.value || v.label || v.color || "");
+    return safeStr(v);
+  };
+
   return {
     make,
     year,
     model: modelFull || baseModel,
     modelNumber:  safeStr(pickFirst(d, "manufacturer_code", "model_number", "style_id", "model_code")),
-    exteriorColor: safeStr(pickFirst(d, "exterior_color", "ext_color")),
-    interiorColor: safeStr(pickFirst(d, "interior_color", "int_color")),
+    exteriorColor: extractColor(d.exterior_color || d.ext_color),
+    interiorColor: extractColor(d.interior_color || d.int_color),
     bodyType, doors, seats,
     pricing: { msrp, destination, totalPrice, optionsTotal },
     engine: engineFull,
