@@ -200,8 +200,16 @@ function mapMarketCheckToSticker(raw, vin) {
     rollover:              findStar("rollover", "rollover_rating")
   };
 
+  // ---- safe-array helper: takes anything, returns array ----
+  const toArray = v => {
+    if (Array.isArray(v)) return v;
+    if (v && typeof v === "object") return Object.values(v).filter(x => x && typeof x === "object");
+    return [];
+  };
+
   // Warranty
-  const warranty = (d.warranties || d.warranty || []).map(w => ({
+  const warrantiesRaw = toArray(d.warranties || d.warranty);
+  const warranty = warrantiesRaw.map(w => ({
     name: safeStr(pickFirst(w, "type", "name", "title")).replace(/\b\w/g, c => c.toUpperCase()),
     terms: w.miles
       ? `${w.months || w.term_months || "?"} months / ${w.miles} miles`
@@ -209,9 +217,9 @@ function mapMarketCheckToSticker(raw, vin) {
   }));
 
   // Optional equipment (options / packages)
-  const optionsRaw = d.options || d.installed_options || d.packages || [];
+  const optionsRaw = toArray(d.options || d.installed_options || d.packages);
   const optionalEquipment = optionsRaw
-    .filter(o => o && (o.name || o.description))
+    .filter(o => o && (o.name || o.description || o.title))
     .map(o => ({
       category: safeStr(pickFirst(o, "category", "type", "group") || "Other")
                   .replace(/_/g, " ")
@@ -222,16 +230,15 @@ function mapMarketCheckToSticker(raw, vin) {
     }));
 
   // Standard equipment / features
-  // MarketCheck may give "features", "installed_equipment", "standard_features", etc.
-  const featuresRaw = d.installed_equipment || d.features || d.standard_features || d.standard_options || [];
-  const featureStrings = Array.isArray(featuresRaw)
-    ? featuresRaw.flatMap(f => {
-        if (typeof f === "string") return [f];
-        if (f && (f.name || f.description)) return [safeStr(f.name || f.description)];
-        if (f && Array.isArray(f.items)) return f.items.map(safeStr);
-        return [];
-      })
-    : [];
+  const featuresRaw = toArray(
+    d.installed_equipment || d.features || d.standard_features || d.standard_options || d.installed_features
+  );
+  const featureStrings = featuresRaw.flatMap(f => {
+    if (typeof f === "string") return [f];
+    if (f && (f.name || f.description || f.title)) return [safeStr(f.name || f.description || f.title)];
+    if (f && Array.isArray(f.items)) return f.items.map(safeStr);
+    return [];
+  });
 
   // Categorise features into our 7 sticker buckets
   const COMFORT_RX = /seat|head\s?rest|leather|heated|ventilated|armrest|lumbar|recline|climate|air condition|hvac|heater|carpet|trim|cup\s?holder|sunroof|moonroof|sunshade|cushion/i;
