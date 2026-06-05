@@ -13,186 +13,197 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* HEADER */
-    .brand-bar {
-      background: #000;
-      padding: 14px 24px;
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 16px; border-bottom: 4px solid #f6c41a;
-    }
-    .brand-bar .logo {
-      color: #f6c41a;
-      font-weight: 900; font-size: 24px;
-      letter-spacing: 2px; text-transform: uppercase;
-      font-family: Impact, "Helvetica Neue", sans-serif;
-    }
-    .brand-bar .tagline {
-      color: #f6c41a;
-      font-size: 13px; font-weight: 700;
-      letter-spacing: .3px; text-transform: uppercase;
+    .brand-bar { background:#000; padding:14px 24px; display:flex; align-items:center; justify-content:space-between; gap:16px; border-bottom:4px solid #f6c41a; }
+    .brand-bar .logo { color:#f6c41a; font-weight:900; font-size:24px; letter-spacing:2px; text-transform:uppercase; font-family:Impact,"Helvetica Neue",sans-serif; }
+    .brand-bar .tagline { color:#f6c41a; font-size:13px; font-weight:700; letter-spacing:.3px; text-transform:uppercase; }
+
+    .hero { max-width:880px; margin:0 auto; padding:56px 24px 32px; text-align:center; }
+    .hero h1 { margin:0 0 14px; font-size:38px; line-height:1.1; font-weight:900; }
+    .hero h1 .yellow { color:#f6c41a; }
+    .hero p { margin:0 auto; max-width:640px; color:#444; font-size:16px; line-height:1.5; }
+
+    .vin-card { max-width:720px; margin:24px auto 0; padding:28px 28px 24px; background:#fff; border:1px solid #e0e0e0; border-radius:14px; box-shadow:0 10px 30px rgba(0,0,0,.04); }
+    .vin-card label.field { display:block; font-size:12px; font-weight:700; color:#555; letter-spacing:.8px; text-transform:uppercase; margin-bottom:10px; }
+    .vin-row { display:flex; gap:10px; }
+    .vin-input { flex:1; padding:14px 16px; font-size:18px; font-family:"SFMono-Regular","Menlo","Consolas",monospace; letter-spacing:1px; text-transform:uppercase; border:2px solid #ddd; border-radius:10px; background:#fafafa; outline:none; }
+    .vin-input:focus { border-color:#f6c41a; background:#fff; }
+    .vin-input.invalid { border-color:#e44; background:#fff7f7; }
+    .vin-btn { padding:14px 26px; font-size:16px; font-weight:800; letter-spacing:.5px; text-transform:uppercase; background:#f6c41a; color:#000; border:none; border-radius:10px; cursor:pointer; box-shadow:0 3px 0 #c89a00; }
+    .vin-btn:hover { transform:translateY(-1px); box-shadow:0 5px 0 #c89a00; }
+    .vin-btn:disabled { opacity:.55; cursor:not-allowed; transform:none; }
+    .vin-help { margin-top:12px; font-size:13px; color:#666; }
+    .vin-help b { color:#111; }
+    .sample-buttons { margin-top:14px; display:flex; flex-wrap:wrap; gap:8px; }
+    .sample-buttons button { padding:6px 12px; font-size:12px; font-family:"SFMono-Regular","Menlo",monospace; background:#fff7e6; color:#6b4d10; border:1px dashed #d8a937; border-radius:6px; cursor:pointer; }
+
+    .status-line { max-width:720px; margin:16px auto 0; text-align:center; min-height:24px; font-size:14px; color:#666; }
+    .status-line.error { color:#c33; font-weight:600; }
+    .status-line.ok { color:#0a8a0a; font-weight:600; }
+    .loader { display:inline-block; width:14px; height:14px; border:2px solid #ccc; border-top-color:#f6c41a; border-radius:50%; animation:spin .9s linear infinite; margin-right:6px; vertical-align:-2px; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+
+    .sticker-actions { max-width:1280px; margin:16px auto 0; padding:0 16px; display:flex; gap:10px; justify-content:flex-end; }
+    .sticker-actions button { padding:10px 18px; font-size:14px; font-weight:700; border-radius:8px; cursor:pointer; border:1px solid #000; }
+    .sticker-actions .btn-pdf { background:#000; color:#f6c41a; }
+    .sticker-actions .btn-clear { background:#fff; color:#000; }
+
+    .sticker-host { max-width:1280px; margin:16px auto 60px; padding:0 16px; }
+
+    /* ====================================================================
+       STICKER — classic Monroney 4-column layout
+       ==================================================================== */
+    .sticker {
+      background:#fff;
+      border:2px solid #000;
+      font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+      color:#111;
+      font-size:11px; line-height:1.35;
     }
 
-    .hero {
-      max-width: 880px;
-      margin: 0 auto;
-      padding: 56px 24px 32px;
-      text-align: center;
+    /* Top brand strip + title */
+    .st-top {
+      display:grid; grid-template-columns:260px 1fr;
+      border-bottom:2px solid #000;
     }
-    .hero h1 {
-      margin: 0 0 14px;
-      font-size: 38px; line-height: 1.1; font-weight: 900;
-      color: #111;
+    .st-brand {
+      background:#000; color:#f6c41a;
+      display:flex; align-items:center; justify-content:center;
+      font-family:Impact,"Helvetica Neue",sans-serif;
+      font-size:42px; font-weight:900; letter-spacing:2px;
+      padding:24px 12px;
     }
-    .hero h1 .yellow { color: #f6c41a; }
-    .hero p {
-      margin: 0 auto; max-width: 640px;
-      color: #444; font-size: 16px; line-height: 1.5;
+    .st-title {
+      padding:14px 16px;
+      display:flex; flex-direction:column; justify-content:center;
+    }
+    .st-title h2 { margin:0 0 6px; font-size:20px; font-weight:900; }
+    .st-title .meta { font-size:11px; color:#222; }
+    .st-title .meta b { font-weight:700; }
+    .st-title .meta-spacer { margin: 0 18px; }
+
+    /* Equipment-header strip "STANDARD EQUIPMENT AT NO EXTRA COST" */
+    .st-eq-banner {
+      background:#e6e6e6; color:#000;
+      text-align:center; padding:6px 0;
+      font-weight:800; letter-spacing:.5px; text-transform:uppercase;
+      font-size:12px;
+      border-bottom:1px solid #ccc;
     }
 
-    /* VIN FORM */
-    .vin-card {
-      max-width: 720px; margin: 24px auto 0;
-      padding: 28px 28px 24px;
-      background: #fff;
-      border: 1px solid #e0e0e0; border-radius: 14px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.04);
+    /* Main grid: 4 columns */
+    .st-grid {
+      display:grid;
+      grid-template-columns: 1.1fr 1.1fr 1fr 1.05fr;
+      gap:0;
     }
-    .vin-card label.field {
-      display: block; font-size: 12px; font-weight: 700;
-      color: #555; letter-spacing: .8px;
-      text-transform: uppercase; margin-bottom: 10px;
-    }
-    .vin-row { display: flex; gap: 10px; }
-    .vin-input {
-      flex: 1;
-      padding: 14px 16px;
-      font-size: 18px;
-      font-family: "SFMono-Regular", "Menlo", "Consolas", monospace;
-      letter-spacing: 1px; text-transform: uppercase;
-      border: 2px solid #ddd; border-radius: 10px;
-      background: #fafafa;
-      transition: border-color .15s, background .15s;
-      outline: none;
-    }
-    .vin-input:focus { border-color: #f6c41a; background: #fff; }
-    .vin-input.invalid { border-color: #e44; background: #fff7f7; }
-    .vin-btn {
-      padding: 14px 26px;
-      font-size: 16px; font-weight: 800;
-      letter-spacing: .5px; text-transform: uppercase;
-      background: #f6c41a; color: #000;
-      border: none; border-radius: 10px;
-      cursor: pointer;
-      box-shadow: 0 3px 0 #c89a00;
-      transition: transform .08s, box-shadow .08s;
-    }
-    .vin-btn:hover { transform: translateY(-1px); box-shadow: 0 5px 0 #c89a00; }
-    .vin-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #c89a00; }
-    .vin-btn:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+    .st-col { padding:10px 14px; border-right:1px solid #000; }
+    .st-col:last-child { border-right:none; }
 
-    .vin-help { margin-top: 12px; font-size: 13px; color: #666; }
-    .vin-help b { color: #111; }
+    /* Standard-equipment category */
+    .st-cat { margin-bottom:8px; }
+    .st-cat h4 {
+      margin:0 0 4px; font-size:11px; font-weight:800;
+      text-transform:uppercase; letter-spacing:.4px;
+      color:#000;
+    }
+    .st-cat ul { margin:0; padding:0 0 0 14px; }
+    .st-cat li { font-size:10px; line-height:1.35; }
 
-    .sample-buttons {
-      margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px;
+    /* Pricing column */
+    .st-price-block { padding:0; }
+    .st-price-row {
+      display:flex; justify-content:space-between; align-items:flex-start;
+      padding:8px 0; gap:10px;
+      border-bottom:1px solid #ccc;
     }
-    .sample-buttons button {
-      padding: 6px 12px; font-size: 12px;
-      font-family: "SFMono-Regular", "Menlo", monospace;
-      background: #fff7e6; color: #6b4d10;
-      border: 1px dashed #d8a937; border-radius: 6px;
-      cursor: pointer;
-    }
-    .sample-buttons button:hover { background: #ffeec2; }
+    .st-price-row:last-child { border-bottom:none; }
+    .st-price-label { font-weight:800; text-transform:uppercase; font-size:11px; }
+    .st-price-value { font-weight:800; font-size:13px; white-space:nowrap; }
+    .st-warranty { font-size:10.5px; padding:6px 0; border-bottom:1px solid #ccc; }
+    .st-warranty h5 { margin:0 0 4px; font-size:11px; font-weight:800; text-transform:uppercase; }
+    .st-warranty ul { margin:0; padding:0 0 0 14px; }
+    .st-warranty li { font-size:10px; line-height:1.4; }
+    .st-opt h5 { margin:8px 0 4px; font-size:11px; font-weight:800; text-transform:uppercase; }
+    .st-opt .opt-cat { margin-top:4px; font-weight:800; }
+    .st-opt .opt-row { display:flex; justify-content:space-between; gap:8px; font-size:10.5px; padding:1px 0; }
+    .st-opt .opt-row .name { flex:1; }
+    .st-opt .opt-row .price { white-space:nowrap; }
 
-    .status-line {
-      max-width: 720px; margin: 16px auto 0;
-      text-align: center; min-height: 24px;
-      font-size: 14px; color: #666;
+    .st-total {
+      margin-top:8px; padding:8px 0;
+      border-top:2px solid #000; border-bottom:2px solid #000;
     }
-    .status-line.error { color: #c33; font-weight: 600; }
-    .status-line.ok    { color: #0a8a0a; font-weight: 600; }
-    .loader {
-      display: inline-block; width: 14px; height: 14px;
-      border: 2px solid #ccc; border-top-color: #f6c41a;
-      border-radius: 50%; animation: spin .9s linear infinite;
-      margin-right: 6px; vertical-align: -2px;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    .st-total .lbl { font-size:13px; font-weight:900; text-transform:uppercase; }
+    .st-total .val { font-size:16px; font-weight:900; }
+    .st-includes { font-size:9.5px; color:#555; margin-top:4px; }
+    .st-tax { font-size:8.5px; color:#777; margin-top:6px; line-height:1.4; }
 
-    .sticker-actions {
-      max-width: 720px; margin: 16px auto 0;
-      display: flex; gap: 10px; justify-content: flex-end;
+    /* EPA fuel-economy block */
+    .st-epa {
+      border:2px solid #000;
+      margin-bottom:10px;
+      background:#fff;
     }
-    .sticker-actions button {
-      padding: 10px 18px; font-size: 14px; font-weight: 700;
-      border-radius: 8px; cursor: pointer;
-      border: 1px solid #000;
+    .st-epa-head {
+      display:flex; justify-content:space-between; align-items:center;
+      padding:6px 10px;
+      border-bottom:1px solid #000;
     }
-    .sticker-actions .btn-pdf {
-      background: #000; color: #f6c41a;
+    .st-epa-head .label {
+      font-size:9px; font-weight:800; text-align:center;
+      border:1px solid #000; padding:1px 4px; line-height:1.1;
     }
-    .sticker-actions .btn-pdf:hover { background: #1a1a1a; }
-    .sticker-actions .btn-clear {
-      background: #fff; color: #000;
-    }
-    .sticker-actions .btn-clear:hover { background: #f4f4f4; }
+    .st-epa-head .title { font-weight:800; flex:1; padding-left:8px; }
+    .st-epa-head .badge { background:#b9e2f5; color:#000; padding:2px 8px; font-size:10px; font-weight:700; border-radius:3px; }
+    .st-epa-main { display:flex; align-items:center; gap:14px; padding:10px 12px; }
+    .st-epa-icon { font-size:32px; }
+    .st-epa-mpg .num { font-size:48px; font-weight:900; line-height:1; }
+    .st-epa-mpg .lbl { font-size:11px; font-weight:700; }
+    .st-epa-mpg .sub { font-size:10px; color:#444; }
+    .st-epa-sub { font-size:10px; display:flex; flex-direction:column; gap:2px; flex:1; }
+    .st-epa-sub div b { font-size:16px; }
+    .st-epa-spent { text-align:right; font-size:10px; }
+    .st-epa-spent b { font-size:18px; }
+    .st-epa-foot { padding:6px 10px; font-size:9px; color:#444; border-top:1px solid #ccc; }
 
-    .sticker-host {
-      max-width: 1280px; margin: 24px auto 60px;
-      padding: 0 16px;
+    /* NHTSA ratings block */
+    .st-safety {
+      border:2px solid #000;
+      background:#fff;
     }
+    .st-safety h3 {
+      background:#000; color:#fff;
+      margin:0; padding:6px 10px;
+      font-size:12px; font-weight:800; text-align:center;
+      text-transform:uppercase; letter-spacing:.5px;
+    }
+    .st-safety-row {
+      display:grid; grid-template-columns:1fr auto;
+      padding:6px 10px;
+      border-bottom:1px solid #ccc;
+      gap:10px; align-items:center;
+    }
+    .st-safety-row:last-child { border-bottom:none; }
+    .st-safety-row .name { font-weight:700; font-size:11px; }
+    .st-safety-row .desc { font-size:9px; color:#555; }
+    .st-safety-row .stars { font-size:14px; letter-spacing:1px; white-space:nowrap; }
+    .st-safety-foot { padding:6px 10px; font-size:9px; color:#444; border-top:1px solid #ccc; }
 
-    /* STICKER */
-    .sticker { background: #fff; border: 2px solid #000; padding: 16px; font-size: 11px; line-height: 1.3; }
-    .sticker-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-    .sticker-header { display: grid; grid-template-columns: 220px 1fr; gap: 12px; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 10px; }
-    .sticker-brand { background: #000; padding: 12px; text-align: center; border-radius: 4px; }
-    .sticker-brand .name { font-size: 22px; font-weight: 900; letter-spacing: 1px; color: #f6c41a; font-family: Impact, "Helvetica Neue", sans-serif; }
-    .sticker-brand .url { font-size: 9px; color: #fff; opacity: .8; margin-top: 4px; }
-    .sticker-title { display: flex; flex-direction: column; justify-content: center; }
-    .sticker-title h2 { margin: 0; font-size: 18px; font-weight: 900; }
-    .sticker-title .meta { font-size: 11px; color: #444; margin-top: 4px; }
-    .sticker-title .meta b { color: #000; }
-
-    .sticker-section { padding: 6px 0; }
-    .sticker-section h3 {
-      background: #000; color: #fff;
-      margin: 0 0 6px; padding: 4px 8px; font-size: 11px;
-      text-transform: uppercase; letter-spacing: .5px;
+    /* Bottom strip */
+    .st-bottom {
+      border-top:2px solid #000;
+      padding:10px 14px;
+      font-size:10.5px;
     }
-    .sticker-section.std h3 { background: #d0d0d0; color: #000; text-align: center; }
-    .sticker-section h4 {
-      margin: 6px 0 3px; font-size: 10px; font-weight: 800;
-      color: #333; text-transform: uppercase;
-    }
-    .sticker-section ul { margin: 0; padding: 0 0 0 14px; }
-    .sticker-section li { font-size: 9.5px; line-height: 1.35; }
-
-    .sticker-pricing { font-size: 11px; }
-    .sticker-pricing .row { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dotted #aaa; }
-    .sticker-pricing .row.total { font-weight: 900; font-size: 14px; border-top: 2px solid #000; border-bottom: 2px solid #000; padding: 6px 0; margin-top: 6px; }
-
-    .sticker-footer {
-      margin-top: 16px;
-      border-top: 2px solid #000;
-      padding-top: 8px;
-      display: flex; justify-content: space-between; align-items: center;
-      font-size: 10px;
-    }
-    .powered-by {
-      background: #000; color: #f6c41a;
-      padding: 6px 10px; border-radius: 4px;
-      font-weight: 800; letter-spacing: 1px;
-      font-size: 10px;
-      font-family: Impact, "Helvetica Neue", sans-serif;
-    }
+    .st-bottom div { margin-bottom:2px; }
+    .st-bottom b { font-weight:700; }
+    .st-powered { float:right; background:#000; color:#f6c41a; padding:6px 10px; border-radius:4px; font-weight:800; font-family:Impact,"Helvetica Neue",sans-serif; letter-spacing:1px; font-size:11px; }
 
     @media print {
-      .brand-bar, .hero, .vin-card, .status-line, .sticker-actions { display: none !important; }
-      .sticker-host { margin: 0; padding: 0; max-width: none; }
-      .sticker { border: 1px solid #000; }
-      @page { size: A4 landscape; margin: 10mm; }
+      .brand-bar, .hero, .vin-card, .status-line, .sticker-actions { display:none !important; }
+      .sticker-host { margin:0; padding:0; max-width:none; }
+      .sticker { border:1px solid #000; }
+      @page { size:A4 landscape; margin:6mm; }
     }
   </style>
 </head>
@@ -211,14 +222,7 @@
   <form class="vin-card" id="vin-form" autocomplete="off">
     <label class="field" for="vin">17-значный VIN автомобиля</label>
     <div class="vin-row">
-      <input
-        id="vin"
-        class="vin-input"
-        type="text"
-        placeholder="например, WAUENAF45JA025606"
-        maxlength="17"
-        spellcheck="false"
-      />
+      <input id="vin" class="vin-input" type="text" placeholder="например, WAUENAF45JA025606" maxlength="17" spellcheck="false" />
       <button class="vin-btn" type="submit" id="generate-btn">Получить стикер</button>
     </div>
     <div class="vin-help">
@@ -240,148 +244,201 @@
 
   <script>
     const VIN_RE = /^[A-HJ-NPR-Z0-9]{17}$/i;
-
     function validateVin(vin) {
       vin = (vin || "").trim().toUpperCase();
-      if (!vin) return { ok: false, msg: "Введите VIN." };
-      if (vin.length !== 17) return { ok: false, msg: `VIN должен быть 17 символов (сейчас ${vin.length}).` };
-      if (!VIN_RE.test(vin)) return { ok: false, msg: "VIN содержит запрещённые символы (нельзя I, O, Q)." };
-      return { ok: true, vin };
+      if (!vin) return { ok:false, msg:"Введите VIN." };
+      if (vin.length !== 17) return { ok:false, msg:`VIN должен быть 17 символов (сейчас ${vin.length}).` };
+      if (!VIN_RE.test(vin)) return { ok:false, msg:"VIN содержит запрещённые символы (нельзя I, O, Q)." };
+      return { ok:true, vin };
     }
-
     const escapeHtml = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
-    const fmtPrice = n => {
+    const fmtMoney = n => {
       if (n === "included") return "включено";
-      if (typeof n !== "number") return n || "";
-      return "$" + n.toLocaleString("en-US");
+      if (typeof n !== "number" || !n) return n === 0 ? "$0" : (n || "");
+      return "$" + Number(n).toLocaleString("en-US");
     };
+    const stars = n => "★".repeat(Math.max(0, Math.min(5, n||0))) + "☆".repeat(Math.max(0, 5 - (n||0)));
+
+    function renderCategory(catName, items) {
+      if (!items || !items.length) return "";
+      return `
+        <div class="st-cat">
+          <h4>${escapeHtml(catName)}</h4>
+          <ul>${items.map(it => `<li>${escapeHtml(it)}</li>`).join("")}</ul>
+        </div>`;
+    }
 
     function renderSticker(data) {
       const std = data.standardEquipment || {};
-      const layout = data.equipmentLayout || { columnA: [], columnB: [] };
-      const renderColumn = cats => cats.map(cat => {
-        const items = std[cat] || [];
-        if (!items.length) return "";
-        return `
-          <div class="sticker-section std">
-            <h3>${escapeHtml(cat)}</h3>
-            <ul>${items.map(it => `<li>${escapeHtml(it)}</li>`).join("")}</ul>
-          </div>`;
-      }).join("");
-
-      const optionalByCat = {};
-      (data.optionalEquipment || []).forEach(o => {
-        const c = o.category || "Other";
-        (optionalByCat[c] = optionalByCat[c] || []).push(o);
-      });
-
-      const optionalHtml = Object.keys(optionalByCat).length ? `
-        <div class="sticker-section">
-          <h3>Опциональное оборудование</h3>
-          ${Object.entries(optionalByCat).map(([cat, items]) => `
-            <h4>${escapeHtml(cat)}</h4>
-            ${items.map(o => `
-              <div class="sticker-pricing">
-                <div class="row"><span>${escapeHtml(o.name)}</span><span>${fmtPrice(o.price)}</span></div>
-              </div>`).join("")}
-          `).join("")}
-        </div>` : "";
-
-      const warrantyHtml = (data.warranty && data.warranty.length) ? `
-        <div class="sticker-section">
-          <h3>Гарантия</h3>
-          <ul>${data.warranty.map(w => `<li><b>${escapeHtml(w.name)}:</b> ${escapeHtml(w.terms)}</li>`).join("")}</ul>
-        </div>` : "";
+      const layout = data.equipmentLayout || {
+        columnA: ["COMFORT","CONVENIENCE","EXTERIOR AND APPEARANCE","IN-CAR ENTERTAINMENT"],
+        columnB: ["POWERTRAIN AND MECHANICAL","SAFETY AND SECURITY","TECHNOLOGY AND TELEMATICS"]
+      };
 
       const pricing = data.pricing || {};
-      const pricingHtml = `
-        <div class="sticker-section">
-          <h3>Цены (USD)</h3>
-          <div class="sticker-pricing">
-            <div class="row"><span>MSRP (базовая цена)</span><span>${fmtPrice(pricing.msrp)}</span></div>
-            ${pricing.optionsTotal ? `<div class="row"><span>Опции</span><span>${fmtPrice(pricing.optionsTotal)}</span></div>` : ""}
-            <div class="row"><span>Доставка</span><span>${fmtPrice(pricing.destination)}</span></div>
-            <div class="row total"><span>ИТОГО</span><span>${fmtPrice(pricing.totalPrice)}</span></div>
+      const warranty = data.warranty || [];
+      const optional = data.optionalEquipment || [];
+      const sr = data.safetyRatings || {};
+      const fe = data.fuelEconomy || {};
+
+      // Group optional equipment by category
+      const optByCat = {};
+      optional.forEach(o => {
+        const c = o.category || "Other";
+        (optByCat[c] = optByCat[c] || []).push(o);
+      });
+
+      const warrantyHtml = warranty.length ? `
+        <div class="st-warranty">
+          <h5>Warranty Coverage:</h5>
+          <ul>${warranty.map(w => `<li>${escapeHtml(w.name)}: ${escapeHtml(w.terms)}</li>`).join("")}</ul>
+        </div>` : `<div class="st-warranty"><h5>Warranty Coverage:</h5></div>`;
+
+      const optionalHtml = Object.keys(optByCat).length ? `
+        <div class="st-opt">
+          <h5>Optional Equipment</h5>
+          ${Object.entries(optByCat).map(([cat, items]) => `
+            <div class="opt-cat">${escapeHtml(cat)}</div>
+            ${items.map(o => `
+              <div class="opt-row"><span class="name">${escapeHtml(o.name)}</span><span class="price">${escapeHtml(fmtMoney(o.price))}</span></div>
+            `).join("")}
+          `).join("")}
+          <div class="opt-row" style="border-top:1px solid #ccc; margin-top:6px; padding-top:6px; font-weight:800;">
+            <span class="name">OPTIONAL EQUIPMENT PRICE</span>
+            <span class="price">${escapeHtml(fmtMoney(pricing.optionsTotal || 0))}</span>
+          </div>
+        </div>` : `
+        <div class="st-opt">
+          <h5>Optional Equipment</h5>
+          <div class="opt-row" style="font-weight:800;">
+            <span class="name">OPTIONAL EQUIPMENT PRICE</span>
+            <span class="price">$0</span>
           </div>
         </div>`;
 
-      const fe = data.fuelEconomy || {};
-      const fuelHtml = (fe.combinedMpg) ? `
-        <div class="sticker-section">
-          <h3>Расход топлива (EPA)</h3>
-          <div class="sticker-pricing">
-            <div class="row"><span>Combined MPG</span><span><b>${fe.combinedMpg}</b></span></div>
-            <div class="row"><span>Город / Трасса</span><span>${fe.cityMpg} / ${fe.highwayMpg}</span></div>
-            ${fe.annualFuelCost ? `<div class="row"><span>Годовая стоимость топлива</span><span>$${fe.annualFuelCost}</span></div>` : ""}
+      const fuelHtml = `
+        <div class="st-epa">
+          <div class="st-epa-head">
+            <div class="label">EPA<br/>DOT</div>
+            <div class="title">Fuel Economy and Environment</div>
+            <div class="badge">${escapeHtml(fe.type || "Gasoline Vehicle")}</div>
           </div>
-        </div>` : "";
+          <div class="st-epa-main">
+            <div class="st-epa-icon">⛽</div>
+            <div class="st-epa-mpg">
+              <div class="num">${fe.combinedMpg || "—"}</div>
+              <div class="lbl">MPG</div>
+              <div class="sub">combined city/hwy</div>
+            </div>
+            <div class="st-epa-sub">
+              <div><b>${fe.cityMpg || "—"}</b> city</div>
+              <div><b>${fe.highwayMpg || "—"}</b> hwy</div>
+              <div>${fe.gallonsPer100Miles ? fe.gallonsPer100Miles + " gal/100mi" : ""}</div>
+            </div>
+            <div class="st-epa-spent">
+              <div>Annual fuel cost</div>
+              <b>${fe.annualFuelCost ? "$" + fe.annualFuelCost : "—"}</b>
+            </div>
+          </div>
+          <div class="st-epa-foot">Actual results will vary. fueleconomy.gov</div>
+        </div>`;
 
-      const sr = data.safetyRatings || {};
-      const stars = n => "★".repeat(n) + "☆".repeat(Math.max(0, 5 - n));
-      const safetyHtml = (sr.overall) ? `
-        <div class="sticker-section">
-          <h3>Рейтинги безопасности NHTSA</h3>
-          <div class="sticker-pricing">
-            <div class="row"><span>Общая оценка</span><span>${stars(sr.overall)}</span></div>
-            <div class="row"><span>Лобовое (водитель)</span><span>${stars(sr.frontalCrashDriver)}</span></div>
-            <div class="row"><span>Лобовое (пассажир)</span><span>${stars(sr.frontalCrashPassenger)}</span></div>
-            <div class="row"><span>Боковое (перед)</span><span>${stars(sr.sideCrashFrontSeat)}</span></div>
-            <div class="row"><span>Опрокидывание</span><span>${stars(sr.rollover)}</span></div>
+      const safetyHtml = sr.overall ? `
+        <div class="st-safety">
+          <h3>Government 5-Star Safety Ratings</h3>
+          <div class="st-safety-row">
+            <div><div class="name">Overall Vehicle Score</div><div class="desc">Based on combined frontal, side and rollover.</div></div>
+            <div class="stars">${stars(sr.overall)}</div>
           </div>
+          <div class="st-safety-row">
+            <div><div class="name">Frontal Crash</div><div class="desc">Driver / Passenger</div></div>
+            <div class="stars">${stars(sr.frontalCrashDriver)}<br/>${stars(sr.frontalCrashPassenger)}</div>
+          </div>
+          <div class="st-safety-row">
+            <div><div class="name">Side Crash</div><div class="desc">Front seat / Rear seat</div></div>
+            <div class="stars">${stars(sr.sideCrashFrontSeat)}<br/>${stars(sr.sideCrashRearSeat)}</div>
+          </div>
+          <div class="st-safety-row">
+            <div><div class="name">Rollover</div><div class="desc">Risk in single-vehicle crash</div></div>
+            <div class="stars">${stars(sr.rollover)}</div>
+          </div>
+          <div class="st-safety-foot">Source: NHTSA · www.safecar.gov</div>
         </div>` : "";
 
       return `
         <div class="sticker">
-          <div class="sticker-header">
-            <div class="sticker-brand">
-              <div class="name">★ WINCARS</div>
-              <div class="url">wincars.onrender.com</div>
-            </div>
-            <div class="sticker-title">
-              <h2>${escapeHtml(data.year)} ${escapeHtml(data.make)} ${escapeHtml(data.model)}</h2>
+          <div class="st-top">
+            <div class="st-brand">${escapeHtml(data.make || "WINCARS")}</div>
+            <div class="st-title">
+              <h2>${escapeHtml(data.year)} ${escapeHtml(data.model)}</h2>
               <div class="meta">
-                ${data.modelNumber ? `<b>НОМЕР МОДЕЛИ:</b> ${escapeHtml(data.modelNumber)} &nbsp; ` : ""}
-                ${data.exteriorColor ? `<b>EXT:</b> ${escapeHtml(data.exteriorColor)} &nbsp; ` : ""}
-                ${data.interiorColor ? `<b>INT:</b> ${escapeHtml(data.interiorColor)}` : ""}
+                <b>MODEL NUMBER:</b> ${escapeHtml(data.modelNumber || "—")}
+                <span class="meta-spacer"></span>
+                <b>EXT:</b> ${escapeHtml(data.exteriorColor || "—")}
+                <span class="meta-spacer"></span>
+                <b>INT:</b> ${escapeHtml(data.interiorColor || "—")}
               </div>
-              ${data.engine ? `<div class="meta"><b>Двигатель:</b> ${escapeHtml(data.engine)} &nbsp; <b>Коробка:</b> ${escapeHtml(data.transmission || "")} &nbsp; <b>Привод:</b> ${escapeHtml(data.drivetrain || "")}</div>` : ""}
+              ${data.engine ? `<div class="meta" style="margin-top:4px;"><b>Engine:</b> ${escapeHtml(data.engine)} &nbsp; <b>Trans:</b> ${escapeHtml(data.transmission || "—")} &nbsp; <b>Drive:</b> ${escapeHtml(data.drivetrain || "—")}</div>` : ""}
             </div>
           </div>
 
-          <div class="sticker-grid">
-            <div>
-              <div class="sticker-section"><h3>Стандартное оборудование (если не заменено опциональным)</h3></div>
-              ${renderColumn(layout.columnA)}
+          <div class="st-eq-banner">Standard Equipment at No Extra Cost</div>
+
+          <div class="st-grid">
+            <!-- Column 1: standard equipment A -->
+            <div class="st-col">
+              ${layout.columnA.map(cat => renderCategory(cat, std[cat])).join("")}
             </div>
-            <div>
-              ${renderColumn(layout.columnB)}
-              ${optionalHtml}
+
+            <!-- Column 2: standard equipment B -->
+            <div class="st-col">
+              ${layout.columnB.map(cat => renderCategory(cat, std[cat])).join("")}
             </div>
-            <div>
-              ${pricingHtml}
+
+            <!-- Column 3: pricing + warranty + optional -->
+            <div class="st-col">
+              <div class="st-price-row">
+                <div class="st-price-label">Manufacturer's<br/>Suggested Retail Price</div>
+                <div class="st-price-value">${escapeHtml(fmtMoney(pricing.msrp))}</div>
+              </div>
               ${warrantyHtml}
+              ${optionalHtml}
+              <div class="st-price-row">
+                <div class="st-price-label">Destination and Handling</div>
+                <div class="st-price-value">${escapeHtml(fmtMoney(pricing.destination))}</div>
+              </div>
+              <div class="st-total">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span class="lbl">Total Vehicle Price</span>
+                  <span class="val">${escapeHtml(fmtMoney(pricing.totalPrice))}</span>
+                </div>
+                <div class="st-includes">(includes Pre-Delivery Service)</div>
+              </div>
+              <div class="st-tax">License and title fees, state and local taxes, and dealer options are not included in the manufacturer's suggested retail price.</div>
+            </div>
+
+            <!-- Column 4: fuel + safety -->
+            <div class="st-col">
               ${fuelHtml}
               ${safetyHtml}
             </div>
           </div>
 
-          <div class="sticker-footer">
-            <div>
-              <b>VIN:</b> ${escapeHtml(data.vin)} &nbsp; · &nbsp;
-              ${data.country ? `<b>Страна:</b> ${escapeHtml(data.country)} &nbsp; · &nbsp;` : ""}
-              ${data.manufacturer ? `<b>Производитель:</b> ${escapeHtml(data.manufacturer)}` : ""}
-            </div>
-            <div class="powered-by">POWERED BY ★ WINCARS</div>
+          <div class="st-bottom">
+            <div class="st-powered">POWERED BY ★ WINCARS</div>
+            <div><b>Country:</b> ${escapeHtml(data.country || "—")}</div>
+            <div><b>Manufacturer:</b> ${escapeHtml(data.manufacturer || data.make || "—")}</div>
+            <div><b>VIN:</b> ${escapeHtml(data.vin)}</div>
           </div>
         </div>`;
     }
 
-    const $vin    = document.getElementById("vin");
-    const $form   = document.getElementById("vin-form");
+    const $vin = document.getElementById("vin");
+    const $form = document.getElementById("vin-form");
     const $status = document.getElementById("status");
-    const $host   = document.getElementById("sticker-host");
+    const $host = document.getElementById("sticker-host");
     const $actions = document.getElementById("sticker-actions");
-    const $btn    = document.getElementById("generate-btn");
+    const $btn = document.getElementById("generate-btn");
 
     function setStatus(html, cls = "") {
       $status.className = "status-line " + cls;
